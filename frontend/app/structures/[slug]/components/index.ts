@@ -1,0 +1,6 @@
+export { StructureHeader } from './StructureHeader'
+export { StructureTabs } from './StructureTabs'
+export { VisualizerTab } from './VisualizerTab'
+export { TheoryTab } from './TheoryTab'
+export { ChallengesTab } from './ChallengesTab'
+export { InteractiveVisualizer } from './InteractiveVisualizer' 

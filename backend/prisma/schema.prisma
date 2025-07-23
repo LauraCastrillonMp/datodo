@@ -1,0 +1,294 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ===================== ENUMS =====================
+enum UserRole {
+  admin    // Tiene acceso completo, puede crear/editar estructuras y usuarios
+  teacher  // Puede editar estructuras y quizzes
+  student  // Solo puede visualizar contenido y tomar quizzes
+}
+enum DataStructureDifficulty {
+  principiante
+  intermedio
+  avanzado
+}
+enum QuizDifficulty {
+  principiante
+  intermedio
+  avanzado
+}
+enum DataStructureContentType {
+  general
+  property
+  operation
+  application
+  resource
+}
+enum QuizQuestionType {
+  multiple_choice
+  true_false
+  code
+  fill_blank
+}
+enum ContentFormat {
+  text
+  video
+  image
+  link
+}
+enum AchievementCategory {
+  learning
+  performance
+  streak
+}
+enum AchievementRarity {
+  common
+  uncommon
+  rare
+  epic
+  legendary
+}
+
+// ===================== MODELS =====================
+
+model User {
+  id                Int                  @id @default(autoincrement())
+  email             String               @unique @db.VarChar(100)
+  password          String               @db.VarChar(255)
+  role              UserRole
+  name              String               @db.VarChar(100)
+  username          String               @unique @db.VarChar(50)
+  createdAt         DateTime?            @default(now()) @db.Timestamp(0)
+  updatedAt         DateTime?            @updatedAt @db.Timestamp(0)
+  deletedAt         DateTime?            @db.Timestamp(0)
+
+  // Relaciones
+  createdStructures DataStructure[]      @relation("CreatedStructures")
+  contentEdits      ContentEditLog[]     @relation("EditorLog")
+  quizEdits         QuizEditLog[]        @relation("QuizEditorLog")
+  quizAttempts      UserQuizAttempt[]
+  createdQuizzes    Quiz[]               @relation("QuizCreator")
+  userAchievements  UserAchievement[]
+  progressRecords   UserProgressRecord[]
+  
+  @@map("users")
+}
+
+// ===================== EXISTING MODELS =====================
+
+model DataStructure {
+  id                   Int                      @id @default(autoincrement())
+  title                String                   @db.VarChar(100)
+  slug                 String                   @unique @db.VarChar(100)
+  description          String                   @db.Text
+  difficulty           DataStructureDifficulty
+  createdBy            Int
+  createdAt            DateTime?                @default(now()) @db.Timestamp(0)
+  updatedAt            DateTime?                @updatedAt @db.Timestamp(0)
+  deletedAt            DateTime?                @db.Timestamp(0)
+
+  // Relaciones
+  contents             DataStructureContent[]
+  quizzes              Quiz[]
+  creator              User                     @relation("CreatedStructures", fields: [createdBy], references: [id], onDelete: Cascade)
+
+  @@map("data_structures")
+  @@index([createdBy])
+}
+
+model DataStructureContent {
+  id                   Int                     @id @default(autoincrement())
+  dataStructureId      Int
+  contentType          DataStructureContentType
+  format               ContentFormat           @default(text)
+  category             String?                 @db.VarChar(100)
+  name                 String                  @db.VarChar(100)
+  description          String?                 @db.Text
+  complexity           String?                 @db.VarChar(20)
+  updatedAt            DateTime?               @updatedAt @db.Timestamp(0)
+
+  // Relaciones
+  dataStructure        DataStructure           @relation(fields: [dataStructureId], references: [id], onDelete: Cascade)
+  editLogs             ContentEditLog[]
+
+  @@index([dataStructureId])
+  @@map("data_structure_content")
+}
+
+model ContentEditLog {
+  id                   Int                     @id @default(autoincrement())
+  contentId            Int
+  editedBy             Int
+  editedAt             DateTime                @default(now()) @db.Timestamp(0)
+  changesSummary       String?                 @db.Text
+
+  // Relaciones
+  content              DataStructureContent    @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  editor               User                    @relation("EditorLog", fields: [editedBy], references: [id], onDelete: Cascade)
+
+  @@index([contentId])
+  @@index([editedBy])
+  @@map("content_edit_log")
+}
+
+model Quiz {
+  id                   Int                     @id @default(autoincrement())
+  dataStructureId      Int
+  title                String                  @db.VarChar(100)
+  description          String?                 @db.Text
+  difficulty           QuizDifficulty
+  createdBy            Int
+  createdAt            DateTime?               @default(now()) @db.Timestamp(0)
+  updatedAt            DateTime?               @updatedAt @db.Timestamp(0)
+  deletedAt            DateTime?               @db.Timestamp(0)
+
+  // Relaciones
+  questions            QuizQuestion[]
+  attempts             UserQuizAttempt[]
+  dataStructure        DataStructure           @relation(fields: [dataStructureId], references: [id], onDelete: Cascade)
+  editLogs             QuizEditLog[]
+  creator              User                    @relation("QuizCreator", fields: [createdBy], references: [id], onDelete: Cascade)
+
+  @@index([dataStructureId])
+  @@index([createdBy])
+  @@map("quizzes")
+}
+
+model QuizQuestion {
+  id                   Int                     @id @default(autoincrement())
+  quizId               Int
+  questionText         String                  @db.Text
+  questionType         QuizQuestionType
+  explanation          String?                 @db.Text
+  order                Int
+  updatedAt            DateTime?               @updatedAt @db.Timestamp(0)
+
+  // Relaciones
+  options              QuestionOption[]
+  quiz                 Quiz                    @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  @@index([quizId])
+  @@map("quiz_questions")
+}
+
+model QuestionOption {
+  id                   Int                     @id @default(autoincrement())
+  questionId           Int
+  optionText           String                  @db.Text
+  isCorrect            Boolean                @default(false)
+  order                Int
+  updatedAt            DateTime?               @updatedAt @db.Timestamp(0)
+
+  // Relaciones
+  question             QuizQuestion            @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
+  @@map("question_options")
+}
+
+model UserQuizAttempt {
+  id                   Int                     @id @default(autoincrement())
+  userId               Int
+  quizId               Int
+  score                Decimal                 @db.Decimal(5, 2)
+  completedAt          DateTime?               @default(now()) @db.Timestamp(0)
+  updatedAt            DateTime?               @updatedAt @db.Timestamp(0)
+
+  // Relaciones
+  user                 User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quiz                 Quiz                    @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  @@index([quizId])
+  @@index([userId])
+  @@map("user_quiz_attempts")
+}
+
+model QuizEditLog {
+  id                   Int                     @id @default(autoincrement())
+  quizId               Int
+  editedBy             Int
+  editedAt             DateTime                @default(now()) @db.Timestamp(0)
+  changesSummary       String?                 @db.Text
+
+  // Relaciones
+  quiz                 Quiz                    @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  editor               User                    @relation("QuizEditorLog", fields: [editedBy], references: [id], onDelete: Cascade)
+
+  @@index([quizId])
+  @@index([editedBy])
+  @@map("quiz_edit_log")
+}
+
+model BlacklistedToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique @db.VarChar(500)
+  expiresAt DateTime @db.Timestamp(0)
+  createdAt DateTime @default(now()) @db.Timestamp(0)
+
+  @@map("blacklisted_tokens")
+}
+
+// ===================== ACHIEVEMENTS & PROGRESS MODELS =====================
+
+model Achievement {
+  id          Int                  @id @default(autoincrement())
+  name        String               @db.VarChar(100)
+  description String               @db.Text
+  category    AchievementCategory
+  rarity      AchievementRarity
+  rewardXP    Int                  @default(0)
+  maxProgress Int                  @default(1)
+  createdAt   DateTime?            @default(now()) @db.Timestamp(0)
+  updatedAt   DateTime?            @updatedAt @db.Timestamp(0)
+
+  // Relaciones
+  userAchievements UserAchievement[]
+
+  @@map("achievements")
+}
+
+model UserAchievement {
+  id            Int         @id @default(autoincrement())
+  userId        Int
+  achievementId Int
+  progress      Int         @default(0)
+  isCompleted   Boolean     @default(false)
+  completedAt   DateTime?   @db.Timestamp(0)
+  createdAt     DateTime?   @default(now()) @db.Timestamp(0)
+  updatedAt     DateTime?   @updatedAt @db.Timestamp(0)
+
+  // Relaciones
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement  Achievement  @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, achievementId])
+  @@index([userId])
+  @@index([achievementId])
+  @@map("user_achievements")
+}
+
+model UserProgressRecord {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  date      DateTime  @db.Date
+  quizzes   Int       @default(0)
+  score     Decimal   @default(0) @db.Decimal(5, 2)
+  studyTime Int       @default(0) // in minutes
+  xp        Int       @default(0)
+  createdAt DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt DateTime? @updatedAt @db.Timestamp(0)
+
+  // Relaciones
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId])
+  @@index([date])
+  @@map("user_progress_records")
+}
