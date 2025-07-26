@@ -11,7 +11,10 @@ async function bootstrap() {
   console.log('Environment check:');
   console.log('NODE_ENV:', process.env.NODE_ENV);
   console.log('JWT_SECRET set:', !!process.env.JWT_SECRET);
-  console.log('FRONTEND_URL:', process.env.FRONTEND_URL || 'http://localhost:3000');
+  console.log(
+    'FRONTEND_URL:',
+    process.env.FRONTEND_URL || 'http://localhost:3000',
+  );
 
   // Enable CORS
   app.enableCors({
@@ -21,6 +24,9 @@ async function bootstrap() {
 
   // Enable validation
   app.useGlobalPipes(new ValidationPipe());
+
+  // Enable global prefix
+  app.setGlobalPrefix('api');
 
   // Enable cookie parser
   app.use(cookieParser());
