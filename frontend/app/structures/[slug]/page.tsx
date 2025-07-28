@@ -4,8 +4,6 @@ import { useState, use } from "react"
 import { useDataStructure } from "@/hooks/useDataStructure"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, RefreshCw, Plus, Minus, Search, RotateCcw, Zap } from "lucide-react"
-import { StackSimulator } from "@/components/simulators/stack-simulator"
-import { QueueSimulator } from "@/components/simulators/queue-simulator"
 import { PageLoadingSpinner } from "@/components/loading-spinner"
 import { HelpModal } from '@/components/structures/HelpModal'
 import { OperationHistoryPanel } from '@/components/structures/OperationHistoryPanel'
@@ -160,28 +158,6 @@ export default function DataStructurePage({ params }: { params: Promise<{ slug: 
   const applications = getApplications()
   const resources = getResources()
 
-  // Render specialized simulators for stack/queue
-  const renderSpecializedSimulator = () => {
-    if (dataStructure.slug === 'stack') {
-      return (
-        <div className="space-y-4">
-          <h2 className="text-2xl font-bold">Simulador Interactivo</h2>
-          <StackSimulator />
-        </div>
-      )
-    }
-    if (dataStructure.slug === 'queue') {
-      return (
-        <div className="space-y-4">
-          <h2 className="text-2xl font-bold">Simulador Interactivo</h2>
-          <QueueSimulator />
-        </div>
-      )
-    }
-    return null
-  }
-
-  // Render generic interactive visualizer for other structures
   const renderGenericVisualizer = () => {
     return (
       <InteractiveVisualizer
@@ -221,11 +197,7 @@ export default function DataStructurePage({ params }: { params: Promise<{ slug: 
       {/* Main Content Tabs */}
       <StructureTabs
         visualizer={
-          <div className="space-y-4 sm:space-y-6">
-            {/* Specialized simulators for stack/queue */}
-            {renderSpecializedSimulator()}
-            
-            {/* Generic interactive visualizer for other structures */}
+          <div className="space-y-4 sm:space-y-6">            
           {dataStructure.slug !== 'stack' && dataStructure.slug !== 'queue' && (
               <>
                 {renderGenericVisualizer()}

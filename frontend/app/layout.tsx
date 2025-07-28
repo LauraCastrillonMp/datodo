@@ -28,7 +28,6 @@ export default function RootLayout({
           <ErrorBoundary>
             <AuthProvider>
               <AppLayout>{children}</AppLayout>
-              {/* <AuthDebug /> */}
             </AuthProvider>
           </ErrorBoundary>
         </ThemeProvider>

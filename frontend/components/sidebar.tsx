@@ -97,13 +97,12 @@ export function Sidebar({ onClose }: SidebarProps) {
       {/* Logo and Toggle */}
       <div className="flex items-center justify-between p-3 sm:p-4 border-b border-border">
         {!collapsed && (
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-3">
             <div className="w-8 h-8 bg-gaming-purple rounded-lg flex items-center justify-center">
               <Binary className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="font-bold text-lg">DataStruct</h1>
-              <p className="text-xs text-muted-foreground">Academia</p>
+              <h1 className="font-bold text-lg">Datodo</h1>
             </div>
           </div>
         )}
@@ -121,7 +120,7 @@ export function Sidebar({ onClose }: SidebarProps) {
         </div>
       </div>
 
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1 overflow-y-auto">
         <div className="p-2 space-y-4 sm:space-y-6">
           {/* Navigation */}
           <div>
@@ -152,7 +151,7 @@ export function Sidebar({ onClose }: SidebarProps) {
                     <Link key={structure.id} href={`/structures/${structure.slug}`} onClick={handleNavClick}>
                       <Button
                         variant={pathname === `/structures/${structure.slug}` ? "secondary" : "ghost"}
-                        className={cn("w-full", collapsed ? "justify-center px-2" : "justify-start")}
+                        className={cn("w-full", collapsed ? "justify-center p-2" : "justify-start")}
                       >
                         <IconComponent className="h-4 w-4" />
                         {!collapsed && <span>{structure.title}</span>}
@@ -161,18 +160,6 @@ export function Sidebar({ onClose }: SidebarProps) {
                   )
                 })
               )}
-            </div>
-          </div>
-
-          {/* Applications */}
-          <div>
-            {!collapsed && (
-              <h3 className="px-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Aplicaciones
-              </h3>
-            )}
-            <div className="space-y-1 mt-2">
-              {navigation.slice(2).map(renderNavItem)}
             </div>
           </div>
         </div>

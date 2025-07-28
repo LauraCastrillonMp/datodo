@@ -238,7 +238,7 @@ model BlacklistedToken {
 
 model Achievement {
   id          Int                  @id @default(autoincrement())
-  name        String               @db.VarChar(100)
+  name        String               @unique @db.VarChar(100) 
   description String               @db.Text
   category    AchievementCategory
   rarity      AchievementRarity

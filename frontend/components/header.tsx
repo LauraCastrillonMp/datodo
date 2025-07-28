@@ -36,14 +36,6 @@ export function Header({ onMenuClick }: HeaderProps) {
               <Menu className="h-5 w-5" />
             </Button>
           )}
-          <div className="hidden sm:flex items-center space-x-2 text-sm text-muted-foreground">
-            <span>Inicio</span>
-            <span>/</span>
-            <span>Estructuras de Datos</span>
-          </div>
-          <div className="sm:hidden text-sm text-muted-foreground">
-            <span>DataStruct</span>
-          </div>
         </div>
 
         <div className="flex items-center space-x-2 sm:space-x-4">

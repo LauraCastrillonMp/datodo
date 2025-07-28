@@ -858,12 +858,6 @@ export function InteractiveVisualizer({
             >
               <RotateCcw className="w-4 h-4 mr-2 text-yellow-500" /> Reset
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => setShowHelp(true)}
-              className="cursor-pointer select-none"
-            >
-              <Code className="w-4 h-4 mr-2 text-blue-500" /> Help
-            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       }

@@ -111,25 +111,14 @@ export default function HomePage() {
       <div className="space-y-4">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 w-full">
           <div className="space-y-2 w-full lg:w-auto">
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">
+            <h1 className="text-xl sm:text-3xl md:text-3xl font-bold">
               ¡Bienvenido de nuevo, {userProfile?.name || userProfile?.username || "Estudiante"}!
             </h1>
             <p className="text-sm sm:text-base text-muted-foreground">Continúa tu aprendizaje de estructuras de datos y mejora tus habilidades</p>
           </div>
-          <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
-            <Button className="w-full sm:w-auto text-sm sm:text-base">
-              <Play className="w-4 h-4 mr-2" />
-              Comenzar desafío
-            </Button>
-            <Button variant="outline" className="w-full sm:w-auto text-sm sm:text-base">
-              <BookOpen className="w-4 h-4 mr-2" />
-              Ver teoría
-            </Button>
-          </div>
         </div>
       </div>
       <div className="space-y-4">
-        <h2 className="text-lg sm:text-xl md:text-2xl font-semibold">Estructuras de Datos</h2>
         {dataStructures.length === 0 ? (
           <div className="text-center py-8 sm:py-12">
             <p className="text-muted-foreground">Aún no hay estructuras de datos disponibles.</p>

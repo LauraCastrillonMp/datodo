@@ -13,14 +13,12 @@ const prisma = new PrismaClient();
 const roundsOfHashing = 10;
 
 async function main() {
-  console.log('🌱  Seeding the database...');
+  console.log('🌱  Seeding la base de datos...');
 
-  // dummy passwords
   const passwordAdmin = await bcrypt.hash('admin123', roundsOfHashing);
   const passwordTeacher = await bcrypt.hash('teacher123', roundsOfHashing);
   const passwordStudent = await bcrypt.hash('student123', roundsOfHashing);
 
-  // create users
   const admin = await prisma.user.upsert({
     where: { email: 'admin@datodo.com' },
     update: { password: passwordAdmin },
@@ -57,9 +55,10 @@ async function main() {
     },
   });
 
-  // create data structures and quizzes
-  const queue = await prisma.dataStructure.create({
-    data: {
+  const queue = await prisma.dataStructure.upsert({
+    where: { slug: 'colas' },
+    update: {},
+    create: {
       title: 'Colas',
       slug: 'colas',
       description: 'Estructura FIFO: Primero en entrar, primero en salir.',
@@ -78,21 +77,24 @@ async function main() {
             contentType: DataStructureContentType.operation,
             name: 'Enqueue',
             format: ContentFormat.text,
-            description: 'Agrega un elemento al final de la cola. Complejidad: O(1)',
+            description:
+              'Agrega un elemento al final de la cola. Complejidad: O(1)',
             complexity: 'O(1)',
           },
           {
             contentType: DataStructureContentType.operation,
             name: 'Dequeue',
             format: ContentFormat.text,
-            description: 'Elimina y retorna el elemento del frente de la cola. Complejidad: O(1)',
+            description:
+              'Elimina y retorna el elemento del frente de la cola. Complejidad: O(1)',
             complexity: 'O(1)',
           },
           {
             contentType: DataStructureContentType.operation,
             name: 'Peek',
             format: ContentFormat.text,
-            description: 'Retorna el elemento del frente sin eliminarlo. Complejidad: O(1)',
+            description:
+              'Retorna el elemento del frente sin eliminarlo. Complejidad: O(1)',
             complexity: 'O(1)',
           },
           {
@@ -106,26 +108,30 @@ async function main() {
             contentType: DataStructureContentType.operation,
             name: 'Size',
             format: ContentFormat.text,
-            description: 'Retorna el número de elementos en la cola. Complejidad: O(1)',
+            description:
+              'Retorna el número de elementos en la cola. Complejidad: O(1)',
             complexity: 'O(1)',
           },
           {
             contentType: DataStructureContentType.application,
             format: ContentFormat.text,
             name: 'Sistemas de impresión',
-            description: 'Las colas se usan para gestionar trabajos de impresión en orden de llegada.',
+            description:
+              'Las colas se usan para gestionar trabajos de impresión en orden de llegada.',
           },
           {
             contentType: DataStructureContentType.application,
             format: ContentFormat.text,
             name: 'Búsqueda en anchura (BFS)',
-            description: 'El algoritmo BFS utiliza una cola para recorrer grafos o árboles por niveles.',
+            description:
+              'El algoritmo BFS utiliza una cola para recorrer grafos o árboles por niveles.',
           },
           {
             contentType: DataStructureContentType.application,
             format: ContentFormat.text,
             name: 'Simulaciones de colas',
-            description: 'Modelado de líneas de espera en bancos, supermercados, etc.',
+            description:
+              'Modelado de líneas de espera en bancos, supermercados, etc.',
           },
           {
             contentType: DataStructureContentType.application,
@@ -156,19 +162,22 @@ async function main() {
             contentType: DataStructureContentType.property,
             name: 'Linear Structure',
             format: ContentFormat.text,
-            description: 'Una cola es una estructura de datos lineal donde los elementos se procesan en orden FIFO (First-In, First-Out).',
+            description:
+              'Una cola es una estructura de datos lineal donde los elementos se procesan en orden FIFO (First-In, First-Out).',
           },
           {
             contentType: DataStructureContentType.property,
             name: 'Dynamic Size',
             format: ContentFormat.text,
-            description: 'El tamaño de la cola puede crecer o decrecer dinámicamente según las operaciones de inserción y eliminación.',
+            description:
+              'El tamaño de la cola puede crecer o decrecer dinámicamente según las operaciones de inserción y eliminación.',
           },
           {
             contentType: DataStructureContentType.property,
             name: 'Time Complexity',
             format: ContentFormat.text,
-            description: 'Las operaciones principales (enqueue, dequeue, peek) tienen una complejidad de tiempo O(1).',
+            description:
+              'Las operaciones principales (enqueue, dequeue, peek) tienen una complejidad de tiempo O(1).',
             complexity: 'O(1)',
           },
         ],
@@ -276,9 +285,10 @@ async function main() {
     },
   });
 
-  // create another data structure - stack
-  const stack = await prisma.dataStructure.create({
-    data: {
+  const pilas = await prisma.dataStructure.upsert({
+    where: { slug: 'pilas' },
+    update: {},
+    create: {
       title: 'Pilas',
       slug: 'pilas',
       description: 'Estructura LIFO: Último en entrar, primero en salir.',
@@ -297,21 +307,24 @@ async function main() {
             contentType: DataStructureContentType.operation,
             name: 'Push',
             format: ContentFormat.text,
-            description: 'Agrega un elemento en la parte superior de la pila. Complejidad: O(1)',
+            description:
+              'Agrega un elemento en la parte superior de la pila. Complejidad: O(1)',
             complexity: 'O(1)',
           },
           {
             contentType: DataStructureContentType.operation,
             name: 'Pop',
             format: ContentFormat.text,
-            description: 'Elimina y retorna el elemento de la parte superior de la pila. Complejidad: O(1)',
+            description:
+              'Elimina y retorna el elemento de la parte superior de la pila. Complejidad: O(1)',
             complexity: 'O(1)',
           },
           {
             contentType: DataStructureContentType.operation,
             name: 'Peek',
             format: ContentFormat.text,
-            description: 'Retorna el elemento de la parte superior sin eliminarlo. Complejidad: O(1)',
+            description:
+              'Retorna el elemento de la parte superior sin eliminarlo. Complejidad: O(1)',
             complexity: 'O(1)',
           },
           {
@@ -325,32 +338,37 @@ async function main() {
             contentType: DataStructureContentType.operation,
             name: 'Size',
             format: ContentFormat.text,
-            description: 'Retorna el número de elementos en la pila. Complejidad: O(1)',
+            description:
+              'Retorna el número de elementos en la pila. Complejidad: O(1)',
             complexity: 'O(1)',
           },
           {
             contentType: DataStructureContentType.application,
             format: ContentFormat.text,
             name: 'Deshacer/rehacer en editores',
-            description: 'Las pilas permiten implementar funcionalidades de deshacer y rehacer en aplicaciones.',
+            description:
+              'Las pilas permiten implementar funcionalidades de deshacer y rehacer en aplicaciones.',
           },
           {
             contentType: DataStructureContentType.application,
             format: ContentFormat.text,
             name: 'Evaluación de expresiones',
-            description: 'Las pilas se usan para evaluar expresiones matemáticas y convertir notaciones.',
+            description:
+              'Las pilas se usan para evaluar expresiones matemáticas y convertir notaciones.',
           },
           {
             contentType: DataStructureContentType.application,
             format: ContentFormat.text,
             name: 'Navegadores web (historial)',
-            description: 'El historial de navegación se gestiona como una pila.',
+            description:
+              'El historial de navegación se gestiona como una pila.',
           },
           {
             contentType: DataStructureContentType.application,
             format: ContentFormat.text,
             name: 'Llamadas a funciones (call stack)',
-            description: 'El call stack de un programa es una pila de llamadas a funciones.',
+            description:
+              'El call stack de un programa es una pila de llamadas a funciones.',
           },
           {
             contentType: DataStructureContentType.resource,
@@ -368,19 +386,22 @@ async function main() {
             contentType: DataStructureContentType.property,
             name: 'Linear Structure',
             format: ContentFormat.text,
-            description: 'Una pila es una estructura de datos lineal que sigue el principio LIFO (Last-In, First-Out).',
+            description:
+              'Una pila es una estructura de datos lineal que sigue el principio LIFO (Last-In, First-Out).',
           },
           {
             contentType: DataStructureContentType.property,
             name: 'Dynamic Size',
             format: ContentFormat.text,
-            description: 'El tamaño de la pila puede crecer o decrecer dinámicamente según las operaciones de inserción y eliminación.',
+            description:
+              'El tamaño de la pila puede crecer o decrecer dinámicamente según las operaciones de inserción y eliminación.',
           },
           {
             contentType: DataStructureContentType.property,
             name: 'Time Complexity',
             format: ContentFormat.text,
-            description: 'Las operaciones principales (push, pop, peek) tienen una complejidad de tiempo O(1).',
+            description:
+              'Las operaciones principales (push, pop, peek) tienen una complejidad de tiempo O(1).',
             complexity: 'O(1)',
           },
         ],
@@ -484,106 +505,14 @@ async function main() {
     },
   });
 
-  // Create sample quizzes for data structures
-  const stackQuiz = await prisma.quiz.create({
-    data: {
-      title: "Stack Fundamentals Quiz",
-      description: "Test your knowledge about stack data structure",
-      difficulty: "principiante",
-      dataStructureId: stack.id,
-      createdBy: admin.id,
-      questions: {
-        create: [
-          {
-            questionText: "What principle does a stack follow?",
-            questionType: "multiple_choice",
-            order: 1,
-            options: {
-              create: [
-                { optionText: "LIFO (Last In, First Out)", isCorrect: true, order: 1 },
-                { optionText: "FIFO (First In, First Out)", isCorrect: false, order: 2 },
-                { optionText: "Random Access", isCorrect: false, order: 3 },
-                { optionText: "Sequential Access", isCorrect: false, order: 4 },
-              ],
-            },
-          },
-          {
-            questionText: "What is the time complexity of push operation in a stack?",
-            questionType: "multiple_choice",
-            order: 2,
-            options: {
-              create: [
-                { optionText: "O(1)", isCorrect: true, order: 1 },
-                { optionText: "O(log n)", isCorrect: false, order: 2 },
-                { optionText: "O(n)", isCorrect: false, order: 3 },
-                { optionText: "O(n²)", isCorrect: false, order: 4 },
-              ],
-            },
-          },
-          {
-            questionText: "Which operation removes the top element from a stack?",
-            questionType: "multiple_choice",
-            order: 3,
-            options: {
-              create: [
-                { optionText: "Push", isCorrect: false, order: 1 },
-                { optionText: "Pop", isCorrect: true, order: 2 },
-                { optionText: "Peek", isCorrect: false, order: 3 },
-                { optionText: "Insert", isCorrect: false, order: 4 },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  });
-
-  const queueQuiz = await prisma.quiz.create({
-    data: {
-      title: "Queue Fundamentals Quiz",
-      description: "Test your knowledge about queue data structure",
-      difficulty: "principiante",
-      dataStructureId: queue.id,
-      createdBy: admin.id,
-      questions: {
-        create: [
-          {
-            questionText: "What principle does a queue follow?",
-            questionType: "multiple_choice",
-            order: 1,
-            options: {
-              create: [
-                { optionText: "LIFO (Last In, First Out)", isCorrect: false, order: 1 },
-                { optionText: "FIFO (First In, First Out)", isCorrect: true, order: 2 },
-                { optionText: "Random Access", isCorrect: false, order: 3 },
-                { optionText: "Sequential Access", isCorrect: false, order: 4 },
-              ],
-            },
-          },
-          {
-            questionText: "What is the time complexity of enqueue operation in a queue?",
-            questionType: "multiple_choice",
-            order: 2,
-            options: {
-              create: [
-                { optionText: "O(1)", isCorrect: true, order: 1 },
-                { optionText: "O(log n)", isCorrect: false, order: 2 },
-                { optionText: "O(n)", isCorrect: false, order: 3 },
-                { optionText: "O(n²)", isCorrect: false, order: 4 },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  });
-
-  // Create linked list data structure
-  const linkedList = await prisma.dataStructure.create({
-    data: {
+  const listaEnlazadaSimple = await prisma.dataStructure.upsert({
+    where: { slug: 'lista-enlazada-simple' },
+    update: {},
+    create: {
       title: 'Lista Enlazada Simple',
       slug: 'lista-enlazada-simple',
-      description: 'Estructura de datos lineal donde cada elemento apunta al siguiente.',
+      description:
+        'Estructura de datos lineal donde cada elemento apunta al siguiente.',
       difficulty: DataStructureDifficulty.principiante,
       creator: { connect: { id: teacher.id } },
       contents: {
@@ -592,20 +521,23 @@ async function main() {
             contentType: DataStructureContentType.general,
             name: 'Definición de Lista Enlazada Simple',
             format: ContentFormat.text,
-            description: 'Una lista enlazada simple es una estructura de datos lineal donde cada elemento (nodo) contiene datos y una referencia al siguiente nodo. El último nodo apunta a NULL.',
+            description:
+              'Una lista enlazada simple es una estructura de datos lineal donde cada elemento (nodo) contiene datos y una referencia al siguiente nodo. El último nodo apunta a NULL.',
           },
           {
             contentType: DataStructureContentType.operation,
             name: 'Insert',
             format: ContentFormat.text,
-            description: 'Inserta un nuevo nodo en la lista. Complejidad: O(1) para inserción al inicio, O(n) para inserción al final',
+            description:
+              'Inserta un nuevo nodo en la lista. Complejidad: O(1) para inserción al inicio, O(n) para inserción al final',
             complexity: 'O(1) - O(n)',
           },
           {
             contentType: DataStructureContentType.operation,
             name: 'Delete',
             format: ContentFormat.text,
-            description: 'Elimina un nodo de la lista. Complejidad: O(1) para eliminación al inicio, O(n) para eliminación al final',
+            description:
+              'Elimina un nodo de la lista. Complejidad: O(1) para eliminación al inicio, O(n) para eliminación al final',
             complexity: 'O(1) - O(n)',
           },
           {
@@ -619,27 +551,31 @@ async function main() {
             contentType: DataStructureContentType.operation,
             name: 'Traverse',
             format: ContentFormat.text,
-            description: 'Recorre todos los elementos de la lista. Complejidad: O(n)',
+            description:
+              'Recorre todos los elementos de la lista. Complejidad: O(n)',
             complexity: 'O(n)',
           },
           {
             contentType: DataStructureContentType.operation,
             name: 'Size',
             format: ContentFormat.text,
-            description: 'Retorna el número de nodos en la lista. Complejidad: O(n)',
+            description:
+              'Retorna el número de nodos en la lista. Complejidad: O(n)',
             complexity: 'O(n)',
           },
           {
             contentType: DataStructureContentType.application,
             format: ContentFormat.text,
             name: 'Implementación de otras estructuras',
-            description: 'Listas enlazadas se usan para implementar pilas, colas y tablas hash.',
+            description:
+              'Listas enlazadas se usan para implementar pilas, colas y tablas hash.',
           },
           {
             contentType: DataStructureContentType.application,
             format: ContentFormat.text,
             name: 'Navegadores (páginas adelante/atrás)',
-            description: 'Permiten navegar hacia adelante y atrás en el historial.',
+            description:
+              'Permiten navegar hacia adelante y atrás en el historial.',
           },
           {
             contentType: DataStructureContentType.application,
@@ -657,19 +593,22 @@ async function main() {
             contentType: DataStructureContentType.property,
             name: 'Dynamic Structure',
             format: ContentFormat.text,
-            description: 'Una lista enlazada simple es una estructura de datos dinámica donde cada elemento apunta al siguiente.',
+            description:
+              'Una lista enlazada simple es una estructura de datos dinámica donde cada elemento apunta al siguiente.',
           },
           {
             contentType: DataStructureContentType.property,
             name: 'Efficient Insert/Delete',
             format: ContentFormat.text,
-            description: 'Permite inserciones y eliminaciones eficientes en cualquier posición, especialmente al inicio.',
+            description:
+              'Permite inserciones y eliminaciones eficientes en cualquier posición, especialmente al inicio.',
           },
           {
             contentType: DataStructureContentType.property,
             name: 'Time Complexity',
             format: ContentFormat.text,
-            description: 'Acceso: O(n), Inserción/Eliminación: O(1) (al inicio), Búsqueda: O(n).',
+            description:
+              'Acceso: O(n), Inserción/Eliminación: O(1) (al inicio), Búsqueda: O(n).',
             complexity: 'O(1) / O(n)',
           },
         ],
@@ -677,12 +616,14 @@ async function main() {
     },
   });
 
-  // Create double linked list data structure
-  const doubleLinkedList = await prisma.dataStructure.create({
-    data: {
+  const listaEnlazaDoble = await prisma.dataStructure.upsert({
+    where: { slug: 'lista-enlazada-doble' },
+    update: {},
+    create: {
       title: 'Lista Enlazada Doble',
       slug: 'lista-enlazada-doble',
-      description: 'Estructura de datos lineal donde cada elemento apunta al anterior y al siguiente.',
+      description:
+        'Estructura de datos lineal donde cada elemento apunta al anterior y al siguiente.',
       difficulty: DataStructureDifficulty.intermedio,
       creator: { connect: { id: teacher.id } },
       contents: {
@@ -691,20 +632,23 @@ async function main() {
             contentType: DataStructureContentType.general,
             name: 'Definición de Lista Enlazada Doble',
             format: ContentFormat.text,
-            description: 'Una lista enlazada doble es una estructura de datos lineal donde cada nodo contiene datos, una referencia al nodo anterior y una referencia al nodo siguiente. Permite navegación en ambas direcciones.',
+            description:
+              'Una lista enlazada doble es una estructura de datos lineal donde cada nodo contiene datos, una referencia al nodo anterior y una referencia al nodo siguiente. Permite navegación en ambas direcciones.',
           },
           {
             contentType: DataStructureContentType.operation,
             name: 'Insert',
             format: ContentFormat.text,
-            description: 'Inserta un nuevo nodo en la lista. Complejidad: O(1) para inserción al inicio/final, O(n) para inserción en posición específica',
+            description:
+              'Inserta un nuevo nodo en la lista. Complejidad: O(1) para inserción al inicio/final, O(n) para inserción en posición específica',
             complexity: 'O(1) - O(n)',
           },
           {
             contentType: DataStructureContentType.operation,
             name: 'Delete',
             format: ContentFormat.text,
-            description: 'Elimina un nodo de la lista. Complejidad: O(1) si se conoce la posición, O(n) para búsqueda',
+            description:
+              'Elimina un nodo de la lista. Complejidad: O(1) si se conoce la posición, O(n) para búsqueda',
             complexity: 'O(1) - O(n)',
           },
           {
@@ -718,21 +662,24 @@ async function main() {
             contentType: DataStructureContentType.operation,
             name: 'Traverse Forward',
             format: ContentFormat.text,
-            description: 'Recorre todos los elementos de la lista hacia adelante. Complejidad: O(n)',
+            description:
+              'Recorre todos los elementos de la lista hacia adelante. Complejidad: O(n)',
             complexity: 'O(n)',
           },
           {
             contentType: DataStructureContentType.operation,
             name: 'Traverse Backward',
             format: ContentFormat.text,
-            description: 'Recorre todos los elementos de la lista hacia atrás. Complejidad: O(n)',
+            description:
+              'Recorre todos los elementos de la lista hacia atrás. Complejidad: O(n)',
             complexity: 'O(n)',
           },
           {
             contentType: DataStructureContentType.operation,
             name: 'Size',
             format: ContentFormat.text,
-            description: 'Retorna el número de nodos en la lista. Complejidad: O(n)',
+            description:
+              'Retorna el número de nodos en la lista. Complejidad: O(n)',
             complexity: 'O(n)',
           },
           {
@@ -763,25 +710,29 @@ async function main() {
             contentType: DataStructureContentType.property,
             name: 'Bidirectional Navigation',
             format: ContentFormat.text,
-            description: 'Permite navegar hacia adelante y hacia atrás en la lista de manera eficiente.',
+            description:
+              'Permite navegar hacia adelante y hacia atrás en la lista de manera eficiente.',
           },
           {
             contentType: DataStructureContentType.property,
             name: 'Efficient Deletion',
             format: ContentFormat.text,
-            description: 'Eliminación más eficiente ya que no necesitamos mantener un puntero al nodo anterior.',
+            description:
+              'Eliminación más eficiente ya que no necesitamos mantener un puntero al nodo anterior.',
           },
           {
             contentType: DataStructureContentType.property,
             name: 'Memory Overhead',
             format: ContentFormat.text,
-            description: 'Requiere más memoria por nodo debido a los punteros adicionales.',
+            description:
+              'Requiere más memoria por nodo debido a los punteros adicionales.',
           },
           {
             contentType: DataStructureContentType.property,
             name: 'Time Complexity',
             format: ContentFormat.text,
-            description: 'Acceso: O(n), Inserción/Eliminación: O(1) (si se conoce la posición), Búsqueda: O(n).',
+            description:
+              'Acceso: O(n), Inserción/Eliminación: O(1) (si se conoce la posición), Búsqueda: O(n).',
             complexity: 'O(1) / O(n)',
           },
         ],
@@ -789,12 +740,14 @@ async function main() {
     },
   });
 
-  // Create circular linked list data structure
-  const circularLinkedList = await prisma.dataStructure.create({
-    data: {
+  const listaEnlazadaCircular = await prisma.dataStructure.upsert({
+    where: { slug: 'lista-enlazada-circular' },
+    update: {},
+    create: {
       title: 'Lista Enlazada Circular',
       slug: 'lista-enlazada-circular',
-      description: 'Estructura de datos donde el último elemento apunta al primero, formando un círculo.',
+      description:
+        'Estructura de datos donde el último elemento apunta al primero, formando un círculo.',
       difficulty: DataStructureDifficulty.intermedio,
       creator: { connect: { id: teacher.id } },
       contents: {
@@ -803,20 +756,23 @@ async function main() {
             contentType: DataStructureContentType.general,
             name: 'Definición de Lista Enlazada Circular',
             format: ContentFormat.text,
-            description: 'Una lista enlazada circular es una estructura de datos donde el último nodo apunta al primer nodo, formando un círculo. No hay un nodo final que apunte a NULL.',
+            description:
+              'Una lista enlazada circular es una estructura de datos donde el último nodo apunta al primer nodo, formando un círculo. No hay un nodo final que apunte a NULL.',
           },
           {
             contentType: DataStructureContentType.operation,
             name: 'Insert',
             format: ContentFormat.text,
-            description: 'Inserta un nuevo nodo en la lista. Complejidad: O(1) para inserción al inicio, O(n) para inserción al final',
+            description:
+              'Inserta un nuevo nodo en la lista. Complejidad: O(1) para inserción al inicio, O(n) para inserción al final',
             complexity: 'O(1) - O(n)',
           },
           {
             contentType: DataStructureContentType.operation,
             name: 'Delete',
             format: ContentFormat.text,
-            description: 'Elimina un nodo de la lista. Complejidad: O(1) para eliminación al inicio, O(n) para eliminación al final',
+            description:
+              'Elimina un nodo de la lista. Complejidad: O(1) para eliminación al inicio, O(n) para eliminación al final',
             complexity: 'O(1) - O(n)',
           },
           {
@@ -830,14 +786,16 @@ async function main() {
             contentType: DataStructureContentType.operation,
             name: 'Traverse',
             format: ContentFormat.text,
-            description: 'Recorre todos los elementos de la lista. Complejidad: O(n)',
+            description:
+              'Recorre todos los elementos de la lista. Complejidad: O(n)',
             complexity: 'O(n)',
           },
           {
             contentType: DataStructureContentType.operation,
             name: 'Size',
             format: ContentFormat.text,
-            description: 'Retorna el número de nodos en la lista. Complejidad: O(n)',
+            description:
+              'Retorna el número de nodos en la lista. Complejidad: O(n)',
             complexity: 'O(n)',
           },
           {
@@ -875,25 +833,29 @@ async function main() {
             contentType: DataStructureContentType.property,
             name: 'No End Point',
             format: ContentFormat.text,
-            description: 'No hay un nodo final que apunte a NULL, todos los nodos están conectados en un círculo.',
+            description:
+              'No hay un nodo final que apunte a NULL, todos los nodos están conectados en un círculo.',
           },
           {
             contentType: DataStructureContentType.property,
             name: 'Efficient Traversal',
             format: ContentFormat.text,
-            description: 'Permite recorrer la lista infinitamente sin necesidad de reiniciar.',
+            description:
+              'Permite recorrer la lista infinitamente sin necesidad de reiniciar.',
           },
           {
             contentType: DataStructureContentType.property,
             name: 'Memory Efficiency',
             format: ContentFormat.text,
-            description: 'No se necesita un puntero especial para el final de la lista.',
+            description:
+              'No se necesita un puntero especial para el final de la lista.',
           },
           {
             contentType: DataStructureContentType.property,
             name: 'Time Complexity',
             format: ContentFormat.text,
-            description: 'Acceso: O(n), Inserción/Eliminación: O(1) (al inicio), Búsqueda: O(n).',
+            description:
+              'Acceso: O(n), Inserción/Eliminación: O(1) (al inicio), Búsqueda: O(n).',
             complexity: 'O(1) / O(n)',
           },
         ],
@@ -901,220 +863,7 @@ async function main() {
     },
   });
 
-  // Create binary search tree data structure
-  const bst = await prisma.dataStructure.create({
-    data: {
-      title: 'Árbol Binario de Búsqueda',
-      slug: 'arbol-binario',
-      description: 'Estructura de datos jerárquica donde cada nodo tiene como máximo dos hijos.',
-      difficulty: DataStructureDifficulty.intermedio,
-      creator: { connect: { id: teacher.id } },
-      contents: {
-        create: [
-          {
-            contentType: DataStructureContentType.general,
-            name: 'Definición de Árbol Binario',
-            format: ContentFormat.text,
-            description: 'Un árbol binario es una estructura de datos jerárquica donde cada nodo tiene como máximo dos hijos...',
-          },
-          {
-            contentType: DataStructureContentType.operation,
-            name: 'Insert',
-            format: ContentFormat.text,
-            description: 'Inserta un nuevo nodo manteniendo la propiedad del árbol. Complejidad: O(log n) en promedio',
-            complexity: 'O(log n)',
-          },
-          {
-            contentType: DataStructureContentType.operation,
-            name: 'Search',
-            format: ContentFormat.text,
-            description: 'Busca un elemento en el árbol. Complejidad: O(log n) en promedio',
-            complexity: 'O(log n)',
-          },
-          {
-            contentType: DataStructureContentType.operation,
-            name: 'Delete',
-            format: ContentFormat.text,
-            description: 'Elimina un nodo del árbol. Complejidad: O(log n) en promedio',
-            complexity: 'O(log n)',
-          },
-          {
-            contentType: DataStructureContentType.operation,
-            name: 'Traverse',
-            format: ContentFormat.text,
-            description: 'Recorre todos los nodos del árbol. Complejidad: O(n)',
-            complexity: 'O(n)',
-          },
-          {
-            contentType: DataStructureContentType.operation,
-            name: 'Height',
-            format: ContentFormat.text,
-            description: 'Calcula la altura del árbol. Complejidad: O(n)',
-            complexity: 'O(n)',
-          },
-          {
-            contentType: DataStructureContentType.application,
-            format: ContentFormat.text,
-            name: 'Bases de datos y sistemas de archivos',
-            description: 'Los BST se usan para organizar y buscar datos de manera eficiente.',
-          },
-          {
-            contentType: DataStructureContentType.application,
-            format: ContentFormat.text,
-            name: 'Implementación de diccionarios',
-            description: 'Permiten búsquedas rápidas de claves y valores.',
-          },
-          {
-            contentType: DataStructureContentType.application,
-            format: ContentFormat.text,
-            name: 'Autocompletado',
-            description: 'Estructuras de árbol se usan para sugerir palabras o rutas.',
-          },
-          {
-            contentType: DataStructureContentType.resource,
-            name: 'VisuAlgo BST',
-            format: ContentFormat.link,
-            description: 'https://visualgo.net/en/bst',
-          },
-          {
-            contentType: DataStructureContentType.property,
-            name: 'Hierarchical Structure',
-            format: ContentFormat.text,
-            description: 'Un árbol binario de búsqueda es una estructura jerárquica donde cada nodo tiene como máximo dos hijos.',
-          },
-          {
-            contentType: DataStructureContentType.property,
-            name: 'Sorted Order',
-            format: ContentFormat.text,
-            description: 'Los elementos están organizados de tal manera que para cada nodo, los valores del subárbol izquierdo son menores y los del derecho son mayores.',
-          },
-          {
-            contentType: DataStructureContentType.property,
-            name: 'Time Complexity',
-            format: ContentFormat.text,
-            description: 'Búsqueda, inserción y eliminación: O(log n) en promedio, O(n) en el peor caso.',
-            complexity: 'O(log n)',
-          },
-        ],
-      },
-    },
-  });
-
-  // Create hash table data structure
-  const hashTable = await prisma.dataStructure.create({
-    data: {
-      title: 'Tabla Hash',
-      slug: 'tabla-hash',
-      description: 'Estructura de datos que mapea claves a valores usando una función hash.',
-      difficulty: DataStructureDifficulty.intermedio,
-      creator: { connect: { id: teacher.id } },
-      contents: {
-        create: [
-          {
-            contentType: DataStructureContentType.general,
-            name: 'Definición de Tabla Hash',
-            format: ContentFormat.text,
-            description: 'Una tabla hash es una estructura de datos que implementa un array asociativo...',
-          },
-          {
-            contentType: DataStructureContentType.operation,
-            name: 'Insert',
-            format: ContentFormat.text,
-            description: 'Inserta un par clave-valor en la tabla. Complejidad: O(1) en promedio',
-            complexity: 'O(1)',
-          },
-          {
-            contentType: DataStructureContentType.operation,
-            name: 'Search',
-            format: ContentFormat.text,
-            description: 'Busca un valor por su clave. Complejidad: O(1) en promedio',
-            complexity: 'O(1)',
-          },
-          {
-            contentType: DataStructureContentType.operation,
-            name: 'Delete',
-            format: ContentFormat.text,
-            description: 'Elimina un par clave-valor de la tabla. Complejidad: O(1) en promedio',
-            complexity: 'O(1)',
-          },
-          {
-            contentType: DataStructureContentType.operation,
-            name: 'Hash',
-            format: ContentFormat.text,
-            description: 'Aplica la función hash a una clave. Complejidad: O(k) donde k es la longitud de la clave',
-            complexity: 'O(k)',
-          },
-          {
-            contentType: DataStructureContentType.operation,
-            name: 'Resize',
-            format: ContentFormat.text,
-            description: 'Redimensiona la tabla hash. Complejidad: O(n)',
-            complexity: 'O(n)',
-          },
-          {
-            contentType: DataStructureContentType.application,
-            format: ContentFormat.text,
-            name: 'Tablas de símbolos en compiladores',
-            description: 'Las tablas hash almacenan identificadores y variables.',
-          },
-          {
-            contentType: DataStructureContentType.application,
-            format: ContentFormat.text,
-            name: 'Implementación de diccionarios',
-            description: 'Permiten búsquedas rápidas de claves y valores.',
-          },
-          {
-            contentType: DataStructureContentType.application,
-            format: ContentFormat.text,
-            name: 'Cachés',
-            description: 'Las tablas hash se usan para implementar cachés de datos.',
-          },
-          {
-            contentType: DataStructureContentType.resource,
-            name: 'VisuAlgo Hash Table',
-            format: ContentFormat.link,
-            description: 'https://visualgo.net/en/hashtable',
-          },
-          {
-            contentType: DataStructureContentType.property,
-            name: 'Key-Value Structure',
-            format: ContentFormat.text,
-            description: 'Una tabla hash almacena pares clave-valor y utiliza una función hash para determinar la posición de almacenamiento.',
-          },
-          {
-            contentType: DataStructureContentType.property,
-            name: 'Efficient Lookup',
-            format: ContentFormat.text,
-            description: 'Permite búsquedas, inserciones y eliminaciones eficientes en promedio.',
-          },
-          {
-            contentType: DataStructureContentType.property,
-            name: 'Time Complexity',
-            format: ContentFormat.text,
-            description: 'Búsqueda, inserción y eliminación: O(1) en promedio, O(n) en el peor caso.',
-            complexity: 'O(1)',
-          },
-        ],
-      },
-    },
-  });
-
-  console.log({
-    admin,
-    teacher,
-    student,
-    queue,
-    stack,
-    linkedList,
-    doubleLinkedList,
-    circularLinkedList,
-    bst,
-    hashTable,
-  });
-
-  console.log('Sample quizzes created:', { stackQuiz: stackQuiz.id, queueQuiz: queueQuiz.id });
-
-  console.log('🌱  The seed command has been executed.');
+  console.log('🌱 Seeding completado');
 }
 
 main()

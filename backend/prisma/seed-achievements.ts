@@ -88,13 +88,15 @@ async function main() {
     },
   ];
 
-  // Clear existing achievements
-  await prisma.achievement.deleteMany();
-
-  // Create new achievements
-  await prisma.achievement.createMany({
-    data: achievements,
-  });
+  await Promise.all(
+    achievements.map((achievement) =>
+      prisma.achievement.upsert({
+        where: { name: achievement.name },
+        update: {},
+        create: achievement,
+      }),
+    ),
+  );
 
   console.log('✅ Achievements seeded successfully!');
 }
@@ -104,6 +106,8 @@ main()
     console.error('❌ Error seeding achievements:', e);
     process.exit(1);
   })
-  .finally(async () => {
-    await prisma.$disconnect();
-  }); 
+  .finally(() => {
+    prisma.$disconnect().catch((e) => {
+      console.error('Error disconnecting from Prisma:', e);
+    });
+  });
