@@ -14,12 +14,19 @@ import {
   QuizQuestion,
   QuestionOption,
   UserQuizAttempt,
+  QuizDifficulty,
 } from '@prisma/client';
 import { UsersService } from '../../users/users.service';
 import { QuizAnalyticsService } from './services/quiz-analytics.service';
 
 @Injectable()
 export class QuizService {
+  // findMany(arg0: {
+  //   where: { difficulty: { in: $Enums.QuizDifficulty[] } };
+  //   include: { questions: { include: { options: boolean } } };
+  // }) {
+  //   throw new Error('Method not implemented.');
+  // }
   constructor(
     private prisma: PrismaService,
     private usersService: UsersService,
@@ -87,7 +94,7 @@ export class QuizService {
 
   async findAll(structureId: number): Promise<Quiz[]> {
     console.log('🔍 QuizService.findAll called with structureId:', structureId);
-    
+
     // Verify data structure exists
     const dataStructure = await this.prisma.dataStructure.findUnique({
       where: { id: structureId },
@@ -120,11 +127,13 @@ export class QuizService {
   async findOne(
     structureId: number,
     id: number,
-  ): Promise<Quiz & {
-    questions: (QuizQuestion & {
-      options: QuestionOption[];
-    })[];
-  }> {
+  ): Promise<
+    Quiz & {
+      questions: (QuizQuestion & {
+        options: QuestionOption[];
+      })[];
+    }
+  > {
     const quiz = await this.prisma.quiz.findFirst({
       where: {
         id,
@@ -171,18 +180,19 @@ export class QuizService {
       difficulty: updateQuizDto.difficulty,
       questions: {
         deleteMany: {},
-        create: updateQuizDto.questions?.map((q, index) => ({
-          questionText: q.questionText,
-          questionType: q.questionType,
-          order: index + 1,
-          options: {
-            create: q.options.map((o, optIndex) => ({
-              optionText: o.optionText,
-              isCorrect: o.isCorrect,
-              order: optIndex + 1,
-            })),
-          },
-        })) || [],
+        create:
+          updateQuizDto.questions?.map((q, index) => ({
+            questionText: q.questionText,
+            questionType: q.questionType,
+            order: index + 1,
+            options: {
+              create: q.options.map((o, optIndex) => ({
+                optionText: o.optionText,
+                isCorrect: o.isCorrect,
+                order: optIndex + 1,
+              })),
+            },
+          })) || [],
       },
     };
 
@@ -238,7 +248,10 @@ export class QuizService {
     userId: number,
   ): Promise<UserQuizAttempt> {
     const quiz = await this.findOne(structureId, id);
-    const score = await this.quizAnalyticsService.calculateScore(quiz, attemptDto);
+    const score = await this.quizAnalyticsService.calculateScore(
+      quiz,
+      attemptDto,
+    );
 
     const attempt = await this.prisma.userQuizAttempt.create({
       data: {
@@ -278,4 +291,62 @@ export class QuizService {
   }> {
     return this.quizAnalyticsService.getAnalytics(structureId, id);
   }
-} 
+
+  async unlockedQuizzes(structureId: number, userId: number): Promise<Quiz[]> {
+    const allQuizzes = await this.prisma.quiz.findMany({
+      where: { dataStructureId: structureId },
+      include: { questions: true },
+    });
+
+    const attempts = await this.prisma.userQuizAttempt.findMany({
+      where: {
+        userId,
+        quiz: {
+          dataStructureId: structureId,
+        },
+      },
+      include: {
+        quiz: true,
+      },
+    });
+
+    const passed = new Set(
+      attempts
+        .filter((a) => a.score.toNumber() >= 60) // use your real pass threshold
+        .map((a) => a.quizId),
+    );
+
+    // Group quizzes by difficulty
+    const quizzesByDifficulty: Record<QuizDifficulty, typeof allQuizzes> = {
+      principiante: [],
+      intermedio: [],
+      avanzado: [],
+    };
+
+    for (const quiz of allQuizzes) {
+      quizzesByDifficulty[quiz.difficulty].push(quiz);
+    }
+
+    const allPassed = (quizzes: typeof allQuizzes) =>
+      quizzes.every((q) => passed.has(q.id));
+
+    const unlockedDifficulties = new Set<QuizDifficulty>();
+
+    // Always unlock "principiante"
+    unlockedDifficulties.add('principiante');
+
+    if (allPassed(quizzesByDifficulty.principiante)) {
+      unlockedDifficulties.add('intermedio');
+    }
+
+    if (
+      allPassed(quizzesByDifficulty.principiante) &&
+      allPassed(quizzesByDifficulty.intermedio)
+    ) {
+      unlockedDifficulties.add('avanzado');
+    }
+
+    // Return only quizzes in unlocked levels
+    return allQuizzes.filter((q) => unlockedDifficulties.has(q.difficulty));
+  }
+}

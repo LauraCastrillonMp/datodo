@@ -44,14 +44,33 @@ export class AuthService {
   ): Promise<AuthResponse | null> {
     const normalizedEmail = email.trim().toLowerCase();
     const user = await this.usersService.findByEmail(normalizedEmail);
+    console.log('🔍 Checking login for:', email);
+    console.log('User from DB:', user);
+    if (!user || !user.password) {
+      console.warn('❌ No user or no password');
+      return null;
+    }
+
+    const match = await bcrypt.compare(password, user.password);
+    console.log('🧪 Bcrypt result:', match);
+
+    if (!match) {
+      console.warn('❌ Password mismatch');
+      return null;
+    }
+
     if (user && (await bcrypt.compare(password, user.password))) {
-      const { password: _, ...result } = user;
+      const { password, ...result } = user;
       return result;
     }
     return null;
   }
 
-  async getTokens(userId: number, username: string, role: string): Promise<Tokens> {
+  async getTokens(
+    userId: number,
+    username: string,
+    role: string,
+  ): Promise<Tokens> {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {
@@ -100,11 +119,9 @@ export class AuthService {
       throw new UnauthorizedException('User already exists');
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     const user = await this.usersService.create({
       email: normalizedEmail,
-      password: hashedPassword,
+      password: password,
       name,
       username,
       role: 'student', // Default role
@@ -121,12 +138,9 @@ export class AuthService {
   async refreshTokens(userId: number, refreshToken: string): Promise<Tokens> {
     try {
       // Verify the refresh token
-      const payload = await this.jwtService.verifyAsync(
-        refreshToken,
-        {
-          secret: process.env.JWT_REFRESH_SECRET || 'your-refresh-secret-key',
-        }
-      );
+      const payload = await this.jwtService.verifyAsync(refreshToken, {
+        secret: process.env.JWT_REFRESH_SECRET || 'your-refresh-secret-key',
+      });
 
       // Check if user still exists
       const user = await this.usersService.findById(userId);
@@ -135,14 +149,15 @@ export class AuthService {
       }
 
       // Check if the token is blacklisted
-      const isBlacklisted = await this.tokenBlacklistService.isBlacklisted(refreshToken);
+      const isBlacklisted =
+        await this.tokenBlacklistService.isBlacklisted(refreshToken);
       if (isBlacklisted) {
         throw new ForbiddenException('Access Denied');
       }
 
       // Generate new tokens
       const tokens = await this.getTokens(user.id, user.username, user.role);
-      
+
       // Optionally blacklist the old refresh token
       await this.tokenBlacklistService.addToBlacklist(refreshToken);
 

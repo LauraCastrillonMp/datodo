@@ -25,10 +25,13 @@ export class UsersService {
 
   // Basic CRUD operations
   async create(createUserDto: CreateUserDto): Promise<User> {
+    console.log('📦 Before hashing:', createUserDto.password);
+
     const hashedPassword = await bcrypt.hash(
       createUserDto.password,
       roundsOfHashing,
     );
+    console.log('🔐 After hashing:', hashedPassword);
     createUserDto.password = hashedPassword;
 
     return this.prisma.user.create({
@@ -104,8 +107,21 @@ export class UsersService {
   }
 
   async findByEmail(email: string): Promise<User | null> {
+    console.log('Looking up user with email:', email);
+
     return this.prisma.user.findUnique({
       where: { email },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        password: true,
+        role: true,
+        name: true,
+        createdAt: true,
+        updatedAt: true,
+        deletedAt: true,
+      },
     });
   }
 

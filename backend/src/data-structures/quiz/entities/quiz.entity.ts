@@ -71,4 +71,4 @@ export class QuizEntity {
 
   @ApiProperty()
   updatedAt: Date;
-} 
+}

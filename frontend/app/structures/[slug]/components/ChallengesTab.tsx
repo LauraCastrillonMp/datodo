@@ -11,7 +11,7 @@ export function ChallengesTab({
   dataStructureId, 
   dataStructureSlug, 
   onRecentScore, 
-  onBestScore 
+  onBestScore
 }: ChallengesTabProps) {
   return (
     <div className="space-y-4">

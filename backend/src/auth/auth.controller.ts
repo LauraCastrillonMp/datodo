@@ -107,7 +107,10 @@ export class AuthController {
     status: 200,
     description: 'User has been successfully logged out',
   })
-  async logout(@Req() req: RequestWithUser, @Res({ passthrough: true }) res: Response) {
+  async logout(
+    @Req() req: RequestWithUser,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     await this.authService.logout(req.user['sub']);
     res.clearCookie('access_token');
     res.clearCookie('refresh_token');
@@ -122,26 +125,29 @@ export class AuthController {
     description: 'Token has been successfully refreshed',
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async refreshToken(@Req() req: RequestWithUser, @Res({ passthrough: true }) res: Response) {
+  async refreshToken(
+    @Req() req: RequestWithUser,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const userId = req.user['sub'];
     const refreshToken = req.user['refreshToken'];
-    
+
     const tokens = await this.authService.refreshTokens(userId, refreshToken);
-    
+
     const isProduction = process.env.NODE_ENV === 'production';
-    res.cookie('access_token', tokens.accessToken, { 
-      httpOnly: true, 
-      secure: isProduction, 
-      sameSite: isProduction ? 'strict' : 'lax', 
-      maxAge: 60 * 60 * 1000 
+    res.cookie('access_token', tokens.accessToken, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? 'strict' : 'lax',
+      maxAge: 60 * 60 * 1000,
     });
-    res.cookie('refresh_token', tokens.refreshToken, { 
-      httpOnly: true, 
-      secure: isProduction, 
-      sameSite: isProduction ? 'strict' : 'lax', 
-      maxAge: 7 * 24 * 3600000 
+    res.cookie('refresh_token', tokens.refreshToken, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? 'strict' : 'lax',
+      maxAge: 7 * 24 * 3600000,
     });
-    
+
     return { message: 'Tokens refreshed successfully' };
   }
 

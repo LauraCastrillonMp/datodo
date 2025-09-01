@@ -345,4 +345,26 @@ export class QuizController {
   ) {
     return this.quizService.getAnalytics(+structureId, +id);
   }
-} 
+
+  @Get(':userId/unlocked-quizzes')
+  @Roles(UserRole.admin, UserRole.teacher, UserRole.student)
+  @ApiOperation({
+    summary: 'Get unlocked quizzes',
+    description: 'Get unlocked quizzes. Available to all authenticated users.',
+  })
+  @ApiParam({
+    name: 'structureId',
+    description: 'ID of the data structure',
+    type: 'number',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Return unlocked quizzes.',
+  })
+  getUnlockedQuizzes(
+    @Param('structureId') structureId: string,
+    @NestRequest() req: RequestWithUser,
+  ) {
+    return this.quizService.unlockedQuizzes(+structureId, +req.user.id);
+  }
+}
