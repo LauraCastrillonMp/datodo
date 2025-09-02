@@ -1,6 +1,18 @@
 version: '3.8'
 
 services:
+  db:
+    image: mysql:8
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Laura0824
+      MYSQL_DATABASE: datodo
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
   backend:
     build: ./backend
     container_name: backend
@@ -13,7 +25,6 @@ services:
       - db
     command: >
       sh -c "
-        chmod +x ./wait-for-it.sh &&
         ./wait-for-it.sh db:3306 -- \
         npx prisma migrate deploy &&
         npx prisma db seed &&
@@ -24,7 +35,7 @@ services:
     build:
       context: ./frontend
       args:
-        NEXT_PUBLIC_API_URL: http://localhost:3001/api
+        NEXT_PUBLIC_API_URL: http://backend:3001/api
     container_name: frontend
     env_file:
       - ./frontend/.env.development
@@ -32,18 +43,6 @@ services:
       - "3000:3000"
     depends_on:
       - backend
-
-  db:
-    image: mysql:8
-    container_name: mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: Laura0824
-      MYSQL_DATABASE: datodo
-    ports:
-      - "3307:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
 
 volumes:
   mysql_data:
