@@ -1,32 +1,31 @@
-# Stage 1: build
-FROM node:22 AS builder
-
+# frontend/Dockerfile
+FROM node:22-slim AS builder
 WORKDIR /usr/src/app
 
 COPY package*.json ./
-RUN npm install --legacy-peer-deps
+RUN npm ci --legacy-peer-deps
 
 COPY . .
-
-# Set public API URL for build
 ARG NEXT_PUBLIC_API_URL
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 
-# Limit memory to avoid SIGKILL
+# reduce memory issues during build
 ENV NODE_OPTIONS="--max_old_space_size=1024"
 
-# Build Next.js app
 RUN npm run build
 
-# Stage 2: production
-FROM node:22
-
+# production image
+FROM node:22-slim AS runner
 WORKDIR /usr/src/app
 
+ENV NODE_ENV=production
+# include node_modules and build from builder
 COPY --from=builder /usr/src/app/package*.json ./
-RUN npm install --production --legacy-peer-deps
+COPY --from=builder /usr/src/app/node_modules ./node_modules
 COPY --from=builder /usr/src/app/.next ./.next
 COPY --from=builder /usr/src/app/public ./public
+COPY --from=builder /usr/src/app/next.config.js ./next.config.js
 
+ENV PATH /usr/src/app/node_modules/.bin:$PATH
 EXPOSE 3000
 CMD ["npm", "run", "start"]

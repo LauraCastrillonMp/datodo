@@ -3,22 +3,24 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
 
   // Log environment variables for debugging
   console.log('Environment check:');
-  console.log('NODE_ENV:', process.env.NODE_ENV);
-  console.log('JWT_SECRET set:', !!process.env.JWT_SECRET);
+  console.log('NODE_ENV:', configService.get('NODE_ENV'));
+  console.log('JWT_SECRET set:', !!configService.get('JWT_SECRET'));
   console.log(
     'FRONTEND_URL:',
-    process.env.FRONTEND_URL || 'http://localhost:3000',
+    configService.get('FRONTEND_URL', 'http://localhost:3000'),
   );
 
   // Enable CORS
   app.enableCors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: configService.get('FRONTEND_URL', 'http://localhost:3000'),
     credentials: true,
   });
 
@@ -26,7 +28,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   // Enable global prefix
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix(configService.get('API_PREFIX', 'api'));
 
   // Enable cookie parser
   app.use(cookieParser());
@@ -42,8 +44,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(3001);
-  console.log('🚀 Server running on port 3001');
+  const port = configService.get('PORT', 3001);
+  await app.listen(port);
+  console.log(`🚀 Server running on port ${port}`);
 }
 
 bootstrap();

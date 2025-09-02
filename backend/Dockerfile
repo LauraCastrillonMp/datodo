@@ -14,9 +14,6 @@ COPY prisma ./prisma/
 # Generate Prisma client
 RUN npx prisma generate
 
-# Set Node memory limit to prevent OOM
-ENV NODE_OPTIONS="--max_old_space_size=1024"
-
 # Build project (TypeScript)
 RUN npm run build
 
