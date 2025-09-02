@@ -49,7 +49,6 @@ frontend/next-env.d.ts
 
 # Prisma
 backend/generated/
-backend/prisma/migrations/
 backend/prisma/*.db
 backend/prisma/*.db-journal
 
