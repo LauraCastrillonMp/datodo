@@ -19,8 +19,11 @@ async function bootstrap() {
   );
 
   // Enable CORS
+  const allowedOrigins = (
+    configService.get<string>('FRONTEND_URL') || 'http://localhost:3000'
+  ).split(',');
   app.enableCors({
-    origin: configService.get('FRONTEND_URL', 'http://localhost:3000'),
+    origin: allowedOrigins,
     credentials: true,
   });
 
@@ -45,7 +48,7 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   const port = configService.get('PORT', 3001);
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
   console.log(`🚀 Server running on port ${port}`);
 }
 
