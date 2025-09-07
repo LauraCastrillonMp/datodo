@@ -187,7 +187,7 @@ class ApiClient {
   // Quiz Analytics endpoints
   getQuizAnalytics = (structureId: number, quizId: number) => this.request(`/data-structures/${structureId}/quizzes/${quizId}/analytics`);
   getQuizResults = (structureId: number, quizId: number) => this.request(`/data-structures/${structureId}/quizzes/${quizId}/results`);
-  getUnlockedQuizzes = (structureId: number, userId: number) => this.request(`/data-structures/${structureId}/quizzes/${userId}/unlocked`);
+  getUnlockedQuizzes = (structureId: number, userId: number) => this.request(`/data-structures/${structureId}/quizzes/${userId}/unlocked-quizzes`);
 
   // Content History endpoints
   getContentHistory = (structureId: number, contentId: number) => this.request(`/data-structures/${structureId}/content/${contentId}/history`);

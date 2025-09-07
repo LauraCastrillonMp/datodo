@@ -1,32 +1,39 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { useAuth } from "@/contexts/auth-context"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Loader2, Code, ArrowLeft, CheckCircle } from "lucide-react"
-import Link from "next/link"
-import { useRef } from "react"
-import { toast } from "@/lib/toast"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/auth-context";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Loader2, Code, ArrowLeft, CheckCircle, Binary } from "lucide-react";
+import Link from "next/link";
+import { useRef } from "react";
+import { toast } from "@/lib/toast";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
-  const { signIn } = useAuth()
-  const router = useRouter()
-  const [emailTouched, setEmailTouched] = useState(false)
-  const [passwordTouched, setPasswordTouched] = useState(false)
-  const passwordInputRef = useRef<HTMLInputElement>(null)
-  const [showPassword, setShowPassword] = useState(false)
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const { signIn } = useAuth();
+  const router = useRouter();
+  const [emailTouched, setEmailTouched] = useState(false);
+  const [passwordTouched, setPasswordTouched] = useState(false);
+  const passwordInputRef = useRef<HTMLInputElement>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const isEmailValid = email.length === 0 || /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)
-  const isPasswordValid = password.length === 0 || password.length >= 6
+  const isEmailValid =
+    email.length === 0 || /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
+  const isPasswordValid = password.length === 0 || password.length >= 6;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,10 +64,10 @@ export default function LoginPage() {
         let isCredentialError = false;
         if (
           typeof result.error === "string" &&
-          (
-            /401|unauthorized|credenciales|usuario|invalid credentials/i.test(result.error) ||
-            result.error.includes("HTTP error! status: 401")
-          )
+          (/401|unauthorized|credenciales|usuario|invalid credentials/i.test(
+            result.error
+          ) ||
+            result.error.includes("HTTP error! status: 401"))
         ) {
           errorMsg = "Usuario no encontrado o credenciales incorrectas.";
           isCredentialError = true;
@@ -87,7 +94,9 @@ export default function LoginPage() {
         return;
       }
       if (!result || !result.data) {
-        console.log("[Login] No result or no data, treating as invalid credentials.");
+        console.log(
+          "[Login] No result or no data, treating as invalid credentials."
+        );
         setError("Usuario no encontrado o credenciales incorrectas.");
         setPassword("");
         setIsLoading(false);
@@ -106,18 +115,20 @@ export default function LoginPage() {
       setIsLoading(false);
       toast.error("Error inesperado. Intenta de nuevo.");
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
       {/* Left side - Image/Branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-purple-600 to-blue-600 items-center justify-center p-8">
-        <div className="text-center text-white space-y-6 max-w-md">
-          <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto">
-            <Code className="w-10 h-10" />
+        <div className="text-center text-white space-y-6">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-gaming-purple rounded-lg flex items-center justify-center">
+              <Binary className="w-5 h-5 text-white" />
+            </div>
+            <h1 className="font-bold text-lg">Datodo</h1>
           </div>
-          <h1 className="text-4xl font-bold">DataStruct Academy</h1>
-          <p className="text-xl text-white/90">
+          <p className="text-white/90">
             Aprende estructuras de datos de manera interactiva y divertida
           </p>
           <div className="space-y-4">
@@ -141,20 +152,26 @@ export default function LoginPage() {
       <div className="flex flex-1 items-center justify-center bg-background p-4 sm:p-6 relative">
         {/* Back to Home Button */}
         <Link href="/" className="absolute top-4 sm:top-6 left-4 sm:left-6">
-          <Button variant="ghost" size="sm" className="flex items-center space-x-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="flex items-center space-x-2"
+          >
             <ArrowLeft className="w-4 h-4" />
             <span className="hidden sm:inline">Volver al inicio</span>
           </Button>
         </Link>
-        
+
         <Card className="w-full max-w-md shadow-lg border-0">
           <CardHeader className="space-y-1 pb-6">
             <div className="flex items-center justify-center mb-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-                <Code className="w-6 h-6 text-white" />
+              <div className="w-8 h-8 bg-gaming-purple rounded-lg flex items-center justify-center">
+                <Binary className="w-5 h-5 text-white" />
               </div>
             </div>
-            <CardTitle className="text-2xl text-center">Iniciar sesión en su cuenta</CardTitle>
+            <CardTitle className="text-2xl text-center">
+              Inicia sesión
+            </CardTitle>
             <CardDescription className="text-center text-muted-foreground">
               Ingrese sus credenciales para acceder a su cuenta
             </CardDescription>
@@ -182,7 +199,9 @@ export default function LoginPage() {
                   }
                 />
                 {!isEmailValid && (emailTouched || email.length > 0) && (
-                  <p className="text-xs text-red-500 mt-1">Introduce un correo electrónico válido.</p>
+                  <p className="text-xs text-red-500 mt-1">
+                    Introduce un correo electrónico válido.
+                  </p>
                 )}
               </div>
               <div className="space-y-2">
@@ -212,18 +231,49 @@ export default function LoginPage() {
                     tabIndex={-1}
                     className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     onClick={() => setShowPassword((v) => !v)}
-                    aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                    aria-label={
+                      showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+                    }
                   >
                     {showPassword ? (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10 0-1.657.403-3.22 1.125-4.575M15 12a3 3 0 11-6 0 3 3 0 016 0zm6.364-2.364A9.956 9.956 0 0022 9c0 5.523-4.477 10-10 10a9.956 9.956 0 01-4.636-1.364" /></svg>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10 0-1.657.403-3.22 1.125-4.575M15 12a3 3 0 11-6 0 3 3 0 016 0zm6.364-2.364A9.956 9.956 0 0022 9c0 5.523-4.477 10-10 10a9.956 9.956 0 01-4.636-1.364"
+                        />
+                      </svg>
                     ) : (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0zm2.828-2.828A9.956 9.956 0 0022 12c0 5.523-4.477 10-10 10S2 17.523 2 12c0-2.21.896-4.21 2.343-5.657" /></svg>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0zm2.828-2.828A9.956 9.956 0 0022 12c0 5.523-4.477 10-10 10S2 17.523 2 12c0-2.21.896-4.21 2.343-5.657"
+                        />
+                      </svg>
                     )}
                   </button>
                 </div>
-                {!isPasswordValid && (passwordTouched || password.length > 0) && (
-                  <p className="text-xs text-red-500 mt-1">La contraseña debe tener al menos 6 caracteres.</p>
-                )}
+                {!isPasswordValid &&
+                  (passwordTouched || password.length > 0) && (
+                    <p className="text-xs text-red-500 mt-1">
+                      La contraseña debe tener al menos 6 caracteres.
+                    </p>
+                  )}
               </div>
               {error && (
                 <div
@@ -233,7 +283,11 @@ export default function LoginPage() {
                   <p className="text-sm text-red-600 font-semibold">{error}</p>
                 </div>
               )}
-              <Button type="submit" className="w-full text-sm sm:text-base" disabled={isLoading}>
+              <Button
+                type="submit"
+                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+                disabled={isLoading}
+              >
                 {isLoading ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -247,7 +301,10 @@ export default function LoginPage() {
             <div className="mt-6 text-center">
               <p className="text-sm text-muted-foreground">
                 ¿No tienes una cuenta?{" "}
-                <Link href="/auth/register" className="text-blue-600 hover:underline">
+                <Link
+                  href="/auth/register"
+                  className="text-purple-600 hover:underline"
+                >
                   Regístrate aquí
                 </Link>
               </p>
@@ -256,5 +313,5 @@ export default function LoginPage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

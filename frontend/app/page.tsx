@@ -47,15 +47,17 @@ export default function HomePage() {
         return
       }
       const structuresArray = Array.isArray(structures) ? structures : []
-      const transformedStructures: DataStructure[] = structuresArray.map((structure: any) => ({
-        id: structure.id,
-        name: structure.title,
-        slug: structure.slug || (structure.title || '').toLowerCase().replace(/\s+/g, '-'),
-        description: structure.description,
-        difficulty: structure.difficulty || 'Beginner',
-        icon: structure.icon || 'List',
-        progress: 0,
-      }))
+      const transformedStructures: DataStructure[] = structuresArray
+        .filter((structure: any) => structure.title === 'Colas' || structure.title === 'Pilas') // Filtrar por título
+        .map((structure: any) => ({
+          id: structure.id,
+          name: structure.title,
+          slug: structure.slug || (structure.title || '').toLowerCase().replace(/\s+/g, '-'),
+          description: structure.description,
+          difficulty: structure.difficulty || 'Beginner',
+          icon: structure.icon || 'List',
+          progress: 0,
+        }))
       setDataStructures(transformedStructures)
     } catch (error) {
       setDsError('Error al cargar las estructuras de datos')
@@ -107,7 +109,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="p-2 sm:p-3 md:p-4 lg:p-6 space-y-6 sm:space-y-8">
+    <div className="p-4 sm:p-4 md:p-6 lg:p-6 space-y-6 sm:space-y-8">
       <div className="space-y-4">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 w-full">
           <div className="space-y-2 w-full lg:w-auto">

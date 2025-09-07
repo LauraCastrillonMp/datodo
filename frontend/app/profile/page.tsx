@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { toast } from "sonner"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -15,12 +16,23 @@ import Achievements from "@/components/achievements"
 import ProgressCharts from "@/components/progress-charts"
 
 export default function ProfilePage() {
-  const { user, loading } = useAuth()
+  const { user, loading, updateProfile } = useAuth()
   const [isEditing, setIsEditing] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
   const [editForm, setEditForm] = useState({
     name: user?.name || '',
     email: user?.email || '',
   })
+
+  // Update edit form when user data changes
+  useEffect(() => {
+    if (user) {
+      setEditForm({
+        name: user.name || '',
+        email: user.email || '',
+      })
+    }
+  }, [user])
 
   if (loading) {
     return (
@@ -51,8 +63,44 @@ export default function ProfilePage() {
   }
 
   const handleSave = async () => {
-    // TODO: Implement save functionality
-    setIsEditing(false)
+    if (!user) return
+
+    try {
+      setIsSaving(true)
+      
+      // Validate form data
+      if (!editForm.name.trim()) {
+        toast.error('El nombre es requerido')
+        return
+      }
+      
+      if (!editForm.email.trim()) {
+        toast.error('El correo electrónico es requerido')
+        return
+      }
+
+      // Check if there are any changes
+      const hasChanges = editForm.name !== user.name || editForm.email !== user.email
+      if (!hasChanges) {
+        toast.info('No hay cambios para guardar')
+        setIsEditing(false)
+        return
+      }
+
+      // Update profile
+      await updateProfile({
+        name: editForm.name.trim(),
+        email: editForm.email.trim(),
+      })
+
+      toast.success('Perfil actualizado correctamente')
+      setIsEditing(false)
+    } catch (error) {
+      console.error('Error updating profile:', error)
+      toast.error('Error al actualizar el perfil. Inténtalo de nuevo.')
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   const handleCancel = () => {
@@ -68,8 +116,8 @@ export default function ProfilePage() {
       {/* Profile Header */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+          <div className="flex justify-between sm:flex-row flex-col gap-4">
+            <div className="flex items-center gap-4 ">
               <Avatar className="h-20 w-20">
                 <AvatarImage src="/placeholder-user.jpg" />
                 <AvatarFallback>
@@ -78,7 +126,7 @@ export default function ProfilePage() {
               </Avatar>
               <div>
                 <CardTitle className="text-2xl">{user.name}</CardTitle>
-                <div className="flex items-center gap-2 mt-1">
+                <div className="flex items-center gap-2 mt-1 flex-wrap text-sm">
                   <Badge variant="secondary">{user.role}</Badge>
                   <Badge variant="outline">Miembro desde {new Date(user.createdAt).getFullYear()}</Badge>
                 </div>
@@ -117,11 +165,11 @@ export default function ProfilePage() {
                 </div>
               </div>
               <div className="flex gap-2">
-                <Button onClick={handleSave}>
+                <Button onClick={handleSave} disabled={isSaving}>
                   <Save className="w-4 h-4 mr-2" />
-                  Guardar Cambios
+                  {isSaving ? 'Guardando...' : 'Guardar Cambios'}
                 </Button>
-                <Button variant="outline" onClick={handleCancel}>
+                <Button variant="outline" onClick={handleCancel} disabled={isSaving}>
                   Cancelar
                 </Button>
               </div>

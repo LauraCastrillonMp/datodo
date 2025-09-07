@@ -12,8 +12,8 @@ import { ErrorBoundary } from "@/components/error-boundary"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "DataStruct Academy - Learn Data Structures with Gamification",
-  description: "Interactive platform to learn data structures with theory, simulations, and gamification elements",
+  title: "Datodo",
+  description: "Plataforma interactiva para aprender estructuras de datos con teoría, simulaciones y elementos de gamificación. ",
 }
 
 export default function RootLayout({

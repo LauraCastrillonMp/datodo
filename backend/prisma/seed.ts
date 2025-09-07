@@ -61,7 +61,7 @@ async function main() {
     create: {
       title: 'Colas',
       slug: 'colas',
-      description: 'Estructura FIFO: Primero en entrar, primero en salir.',
+      description: 'Estructura lineal con principio FIFO: Primero en entrar, primero en salir',
       difficulty: DataStructureDifficulty.principiante,
       creator: { connect: { id: admin.id } },
       contents: {
@@ -71,15 +71,14 @@ async function main() {
             format: ContentFormat.text,
             name: 'Definición de Cola',
             description:
-              'Una cola (queue) es una estructura de datos lineal que sigue el principio FIFO...',
+              'Una cola (queue) es una estructura de datos lineal que sigue el principio FIFO (First In, First Out – Primero en entrar, Primero en salir), donde el primer elemento en entrar es el primero en salir.',
           },
           {
             contentType: DataStructureContentType.operation,
             name: 'Enqueue',
             format: ContentFormat.text,
             description:
-              'Agrega un elemento al final de la cola. Complejidad: O(1)',
-            complexity: 'O(1)',
+              'Agrega un elemento al final de la cola. Complejidad: O(1)'
           },
           {
             contentType: DataStructureContentType.operation,
@@ -87,7 +86,6 @@ async function main() {
             format: ContentFormat.text,
             description:
               'Elimina y retorna el elemento del frente de la cola. Complejidad: O(1)',
-            complexity: 'O(1)',
           },
           {
             contentType: DataStructureContentType.operation,
@@ -95,14 +93,12 @@ async function main() {
             format: ContentFormat.text,
             description:
               'Retorna el elemento del frente sin eliminarlo. Complejidad: O(1)',
-            complexity: 'O(1)',
           },
           {
             contentType: DataStructureContentType.operation,
             name: 'IsEmpty',
             format: ContentFormat.text,
             description: 'Verifica si la cola está vacía. Complejidad: O(1)',
-            complexity: 'O(1)',
           },
           {
             contentType: DataStructureContentType.operation,
@@ -110,7 +106,6 @@ async function main() {
             format: ContentFormat.text,
             description:
               'Retorna el número de elementos en la cola. Complejidad: O(1)',
-            complexity: 'O(1)',
           },
           {
             contentType: DataStructureContentType.application,
@@ -171,14 +166,6 @@ async function main() {
             format: ContentFormat.text,
             description:
               'El tamaño de la cola puede crecer o decrecer dinámicamente según las operaciones de inserción y eliminación.',
-          },
-          {
-            contentType: DataStructureContentType.property,
-            name: 'Time Complexity',
-            format: ContentFormat.text,
-            description:
-              'Las operaciones principales (enqueue, dequeue, peek) tienen una complejidad de tiempo O(1).',
-            complexity: 'O(1)',
           },
         ],
       },
@@ -301,7 +288,7 @@ async function main() {
             name: 'Definición de Pila',
             format: ContentFormat.text,
             description:
-              'Una pila es una estructura de datos que sigue el principio LIFO...',
+              'Una pila es una estructura de datos que sigue el principio LIFO  ',
           },
           {
             contentType: DataStructureContentType.operation,
@@ -309,7 +296,6 @@ async function main() {
             format: ContentFormat.text,
             description:
               'Agrega un elemento en la parte superior de la pila. Complejidad: O(1)',
-            complexity: 'O(1)',
           },
           {
             contentType: DataStructureContentType.operation,
@@ -317,7 +303,6 @@ async function main() {
             format: ContentFormat.text,
             description:
               'Elimina y retorna el elemento de la parte superior de la pila. Complejidad: O(1)',
-            complexity: 'O(1)',
           },
           {
             contentType: DataStructureContentType.operation,
@@ -325,14 +310,12 @@ async function main() {
             format: ContentFormat.text,
             description:
               'Retorna el elemento de la parte superior sin eliminarlo. Complejidad: O(1)',
-            complexity: 'O(1)',
           },
           {
             contentType: DataStructureContentType.operation,
             name: 'IsEmpty',
             format: ContentFormat.text,
             description: 'Verifica si la pila está vacía. Complejidad: O(1)',
-            complexity: 'O(1)',
           },
           {
             contentType: DataStructureContentType.operation,
@@ -340,7 +323,6 @@ async function main() {
             format: ContentFormat.text,
             description:
               'Retorna el número de elementos en la pila. Complejidad: O(1)',
-            complexity: 'O(1)',
           },
           {
             contentType: DataStructureContentType.application,
@@ -395,15 +377,7 @@ async function main() {
             format: ContentFormat.text,
             description:
               'El tamaño de la pila puede crecer o decrecer dinámicamente según las operaciones de inserción y eliminación.',
-          },
-          {
-            contentType: DataStructureContentType.property,
-            name: 'Time Complexity',
-            format: ContentFormat.text,
-            description:
-              'Las operaciones principales (push, pop, peek) tienen una complejidad de tiempo O(1).',
-            complexity: 'O(1)',
-          },
+          }
         ],
       },
       quizzes: {
@@ -530,7 +504,6 @@ async function main() {
             format: ContentFormat.text,
             description:
               'Inserta un nuevo nodo en la lista. Complejidad: O(1) para inserción al inicio, O(n) para inserción al final',
-            complexity: 'O(1) - O(n)',
           },
           {
             contentType: DataStructureContentType.operation,
@@ -538,14 +511,12 @@ async function main() {
             format: ContentFormat.text,
             description:
               'Elimina un nodo de la lista. Complejidad: O(1) para eliminación al inicio, O(n) para eliminación al final',
-            complexity: 'O(1) - O(n)',
           },
           {
             contentType: DataStructureContentType.operation,
             name: 'Search',
             format: ContentFormat.text,
             description: 'Busca un elemento en la lista. Complejidad: O(n)',
-            complexity: 'O(n)',
           },
           {
             contentType: DataStructureContentType.operation,
@@ -553,7 +524,6 @@ async function main() {
             format: ContentFormat.text,
             description:
               'Recorre todos los elementos de la lista. Complejidad: O(n)',
-            complexity: 'O(n)',
           },
           {
             contentType: DataStructureContentType.operation,
@@ -561,7 +531,6 @@ async function main() {
             format: ContentFormat.text,
             description:
               'Retorna el número de nodos en la lista. Complejidad: O(n)',
-            complexity: 'O(n)',
           },
           {
             contentType: DataStructureContentType.application,
@@ -603,14 +572,6 @@ async function main() {
             description:
               'Permite inserciones y eliminaciones eficientes en cualquier posición, especialmente al inicio.',
           },
-          {
-            contentType: DataStructureContentType.property,
-            name: 'Time Complexity',
-            format: ContentFormat.text,
-            description:
-              'Acceso: O(n), Inserción/Eliminación: O(1) (al inicio), Búsqueda: O(n).',
-            complexity: 'O(1) / O(n)',
-          },
         ],
       },
     },
@@ -641,7 +602,6 @@ async function main() {
             format: ContentFormat.text,
             description:
               'Inserta un nuevo nodo en la lista. Complejidad: O(1) para inserción al inicio/final, O(n) para inserción en posición específica',
-            complexity: 'O(1) - O(n)',
           },
           {
             contentType: DataStructureContentType.operation,
@@ -649,14 +609,12 @@ async function main() {
             format: ContentFormat.text,
             description:
               'Elimina un nodo de la lista. Complejidad: O(1) si se conoce la posición, O(n) para búsqueda',
-            complexity: 'O(1) - O(n)',
           },
           {
             contentType: DataStructureContentType.operation,
             name: 'Search',
             format: ContentFormat.text,
             description: 'Busca un elemento en la lista. Complejidad: O(n)',
-            complexity: 'O(n)',
           },
           {
             contentType: DataStructureContentType.operation,
@@ -664,7 +622,6 @@ async function main() {
             format: ContentFormat.text,
             description:
               'Recorre todos los elementos de la lista hacia adelante. Complejidad: O(n)',
-            complexity: 'O(n)',
           },
           {
             contentType: DataStructureContentType.operation,
@@ -672,7 +629,6 @@ async function main() {
             format: ContentFormat.text,
             description:
               'Recorre todos los elementos de la lista hacia atrás. Complejidad: O(n)',
-            complexity: 'O(n)',
           },
           {
             contentType: DataStructureContentType.operation,
@@ -680,7 +636,6 @@ async function main() {
             format: ContentFormat.text,
             description:
               'Retorna el número de nodos en la lista. Complejidad: O(n)',
-            complexity: 'O(n)',
           },
           {
             contentType: DataStructureContentType.application,
@@ -727,14 +682,6 @@ async function main() {
             description:
               'Requiere más memoria por nodo debido a los punteros adicionales.',
           },
-          {
-            contentType: DataStructureContentType.property,
-            name: 'Time Complexity',
-            format: ContentFormat.text,
-            description:
-              'Acceso: O(n), Inserción/Eliminación: O(1) (si se conoce la posición), Búsqueda: O(n).',
-            complexity: 'O(1) / O(n)',
-          },
         ],
       },
     },
@@ -765,7 +712,6 @@ async function main() {
             format: ContentFormat.text,
             description:
               'Inserta un nuevo nodo en la lista. Complejidad: O(1) para inserción al inicio, O(n) para inserción al final',
-            complexity: 'O(1) - O(n)',
           },
           {
             contentType: DataStructureContentType.operation,
@@ -773,14 +719,12 @@ async function main() {
             format: ContentFormat.text,
             description:
               'Elimina un nodo de la lista. Complejidad: O(1) para eliminación al inicio, O(n) para eliminación al final',
-            complexity: 'O(1) - O(n)',
           },
           {
             contentType: DataStructureContentType.operation,
             name: 'Search',
             format: ContentFormat.text,
             description: 'Busca un elemento en la lista. Complejidad: O(n)',
-            complexity: 'O(n)',
           },
           {
             contentType: DataStructureContentType.operation,
@@ -788,7 +732,6 @@ async function main() {
             format: ContentFormat.text,
             description:
               'Recorre todos los elementos de la lista. Complejidad: O(n)',
-            complexity: 'O(n)',
           },
           {
             contentType: DataStructureContentType.operation,
@@ -796,14 +739,12 @@ async function main() {
             format: ContentFormat.text,
             description:
               'Retorna el número de nodos en la lista. Complejidad: O(n)',
-            complexity: 'O(n)',
           },
           {
             contentType: DataStructureContentType.operation,
             name: 'IsCircular',
             format: ContentFormat.text,
             description: 'Verifica si la lista es circular. Complejidad: O(1)',
-            complexity: 'O(1)',
           },
           {
             contentType: DataStructureContentType.application,
@@ -849,14 +790,6 @@ async function main() {
             format: ContentFormat.text,
             description:
               'No se necesita un puntero especial para el final de la lista.',
-          },
-          {
-            contentType: DataStructureContentType.property,
-            name: 'Time Complexity',
-            format: ContentFormat.text,
-            description:
-              'Acceso: O(n), Inserción/Eliminación: O(1) (al inicio), Búsqueda: O(n).',
-            complexity: 'O(1) / O(n)',
           },
         ],
       },

@@ -15,48 +15,48 @@ const dataStructures = [
     icon: GitBranch,
     difficulty: "Principiante"
   },
-  {
-    name: "Listas Enlazadas Simples",
-    description: "Estructuras de datos dinámicas y flexibles",
-    icon: Database,
-    difficulty: "Principiante"
-  },
-  {
-    name: "Listas Enlazadas Dobles",
-    description: "Navegación bidireccional eficiente",
-    icon: Database,
-    difficulty: "Intermedio"
-  },
-  {
-    name: "Listas Enlazadas Circulares",
-    description: "Recorrido infinito sin fin",
-    icon: Database,
-    difficulty: "Intermedio"
-  },
-  {
-    name: "Árboles Binarios",
-    description: "Estructuras jerárquicas eficientes",
-    icon: Cpu,
-    difficulty: "Intermedio"
-  },
-  {
-    name: "Grafos",
-    description: "Modelado de relaciones complejas",
-    icon: Activity,
-    difficulty: "Avanzado"
-  },
-  {
-    name: "Tablas Hash",
-    description: "Acceso rápido a datos con O(1)",
-    icon: BarChart3,
-    difficulty: "Intermedio"
-  }
+  // {
+  //   name: "Listas Enlazadas Simples",
+  //   description: "Estructuras de datos dinámicas y flexibles",
+  //   icon: Database,
+  //   difficulty: "Principiante"
+  // },
+  // {
+  //   name: "Listas Enlazadas Dobles",
+  //   description: "Navegación bidireccional eficiente",
+  //   icon: Database,
+  //   difficulty: "Intermedio"
+  // },
+  // {
+  //   name: "Listas Enlazadas Circulares",
+  //   description: "Recorrido infinito sin fin",
+  //   icon: Database,
+  //   difficulty: "Intermedio"
+  // },
+  // {
+  //   name: "Árboles Binarios",
+  //   description: "Estructuras jerárquicas eficientes",
+  //   icon: Cpu,
+  //   difficulty: "Intermedio"
+  // },
+  // {
+  //   name: "Grafos",
+  //   description: "Modelado de relaciones complejas",
+  //   icon: Activity,
+  //   difficulty: "Avanzado"
+  // },
+  // {
+  //   name: "Tablas Hash",
+  //   description: "Acceso rápido a datos con O(1)",
+  //   icon: BarChart3,
+  //   difficulty: "Intermedio"
+  // }
 ]
 
 export default function DataStructuresSection() {
   return (
-    <section className="container mx-auto px-4 py-20">
-      <div className="text-center space-y-4 mb-16">
+    <section className="container mx-auto px-4 py-20 ">
+      <div className="text-center space-y-4 mb-16 flex flex-col items-center">
         <Badge variant="outline" className="px-4 py-2">
           📚 Estructuras de datos
         </Badge>
@@ -67,7 +67,7 @@ export default function DataStructuresSection() {
           Desde conceptos básicos hasta estructuras avanzadas, cubrimos todo lo que necesitas saber.
         </p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
         {dataStructures.map((ds, index) => (
           <Card key={index} className="group hover:shadow-lg transition-all duration-300 hover:scale-105">
             <CardHeader className="pb-3">

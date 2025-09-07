@@ -295,7 +295,7 @@ export function InteractiveVisualizer({
       case 'queue':
         return (
           <div className="flex flex-col items-center justify-center min-h-[350px] overflow-x-auto w-full">
-            <div className="border-2 border-gray-600 rounded-lg p-4 bg-gray-800/50 min-w-[320px] w-fit overflow-x-auto">
+            <div className="border-2 border-gray-600 rounded-lg p-4 min-w-[320px] w-fit overflow-x-auto">
               <div className="flex items-center justify-center space-x-2">
                 {items.map((item, index) => (
                   <div

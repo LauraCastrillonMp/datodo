@@ -20,11 +20,11 @@ export function OperationsCard({ operations }: { operations: any[] }) {
                   <h4 className="font-semibold text-sm sm:text-base">
                     {operation.name}
                   </h4>
-                  {operation.complexity && (
+                  {/* {operation.complexity && (
                     <Badge variant="outline" className="text-xs">
                       {operation.complexity}
                     </Badge>
-                  )}
+                  )} */}
                 </div>
                 <div
                   className="prose max-w-none text-sm"

@@ -110,7 +110,6 @@ model DataStructureContent {
   category             String?                 @db.VarChar(100)
   name                 String                  @db.VarChar(100)
   description          String?                 @db.Text
-  complexity           String?                 @db.VarChar(20)
   updatedAt            DateTime?               @updatedAt @db.Timestamp(0)
 
   // Relaciones

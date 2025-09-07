@@ -1,0 +1,27 @@
+[Unit]
+Description=DataTodo Backend Service
+After=network.target mysql.service
+Wants=mysql.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/datodo/backend
+EnvironmentFile=/opt/datodo/backend/.env
+ExecStart=/usr/bin/node dist/main.js
+Restart=always
+RestartSec=10
+User=datodo
+Group=datodo
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=datodo-backend
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/opt/datodo/backend
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

@@ -365,6 +365,28 @@ export class QuizController {
     @Param('structureId') structureId: string,
     @NestRequest() req: RequestWithUser,
   ) {
+    console.log(`🔓 API called - Structure: ${structureId}, User: ${req.user.id}`);
     return this.quizService.unlockedQuizzes(+structureId, +req.user.id);
+  }
+
+  @Get('test-unlock/:structureId')
+  @Roles(UserRole.admin, UserRole.teacher, UserRole.student)
+  @ApiOperation({
+    summary: 'Test unlock - returns all quizzes',
+    description: 'Test endpoint that returns all quizzes for debugging.',
+  })
+  async testUnlock(@Param('structureId') structureId: string) {
+    console.log(`🧪 Test unlock called for structure ${structureId}`);
+    return this.quizService.findAll(+structureId);
+  }
+
+  @Get('debug-attempts')
+  @Roles(UserRole.admin, UserRole.teacher, UserRole.student)
+  @ApiOperation({
+    summary: 'Debug all quiz attempts',
+    description: 'Debug endpoint to see all quiz attempts in the database.',
+  })
+  async debugAttempts() {
+    return this.quizService.debugAllAttempts();
   }
 }

@@ -58,11 +58,16 @@ export function Sidebar({ onClose }: SidebarProps) {
   const isMobile = useIsMobile()
 
   useEffect(() => {
+    // apiClient.getDataStructures().then(result => {
+    //   if (!result.error && result.data) setDataStructures(result.data as DataStructure[])
+    // }).catch(() => setDataStructures([])).finally(() => setLoading(false))}
+
     apiClient.getDataStructures().then(result => {
-      if (!result.error && result.data) setDataStructures(result.data as DataStructure[])
+      if (!result.error && result.data) setDataStructures(
+        (result.data as DataStructure[]).filter(ds => ds.title.toLowerCase().includes('colas') || ds.title.toLowerCase().includes('pilas'))
+      )
     }).catch(() => setDataStructures([])).finally(() => setLoading(false))
   }, [])
-
   const getIcon = (title: string) => {
     const lower = title.toLowerCase()
     return Object.entries(iconMap).find(([key]) => lower.includes(key))?.[1] || List

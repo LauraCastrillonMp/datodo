@@ -105,9 +105,6 @@ export function VisualizerTab({
                 {operationsContent.map((content: any) => (
                   <div key={content.id} className="space-y-2 w-full">
                     <h4 className="font-semibold">{content.name}</h4>
-                    {content.complexity && (
-                      <span className="mb-2 inline-block border rounded px-2 py-0.5 text-xs">Complejidad: {content.complexity}</span>
-                    )}
                     <div className="prose max-w-none w-full" dangerouslySetInnerHTML={{ __html: content.description || '' }} />
                   </div>
                 ))}

@@ -26,36 +26,24 @@ const features = [
     title: "Simulaciones Visuales",
     description: "Observa cómo las estructuras de datos cobran vida con animaciones fluidas y visualizaciones interactivas.",
     color: "text-orange-500"
-  },
-  {
-    icon: Users,
-    title: "Comunidad Activa",
-    description: "Únete a una comunidad de estudiantes y profesionales que comparten conocimientos y experiencias.",
-    color: "text-pink-500"
-  },
-  {
-    icon: Award,
-    title: "Certificaciones",
-    description: "Obtén certificados de progreso y domina cada estructura de datos con evaluaciones prácticas.",
-    color: "text-indigo-500"
   }
 ]
 
 export default function FeaturesSection() {
   return (
-    <section className="container mx-auto px-4 py-20">
+    <section className="container mx-auto px-4 py-20 flex flex-col items-center">
       <div className="text-center space-y-4 mb-16">
         <Badge variant="outline" className="px-4 py-2">
           ✨ Características únicas
         </Badge>
         <h2 className="text-4xl md:text-5xl font-bold">
-          ¿Por qué elegir DataStruct Academy?
+          ¿Por qué elegir Datodo?
         </h2>
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
           Nuestra plataforma combina tecnología de vanguardia con métodos de aprendizaje comprobados para ofrecerte la mejor experiencia educativa.
         </p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {features.map((feature, index) => (
           <Card key={index} className="group hover:shadow-xl transition-all duration-300 hover:scale-105 border-2 hover:border-purple-200">
             <CardHeader className="pb-4">

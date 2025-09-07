@@ -6,7 +6,7 @@ const testimonials = [
   {
     name: "María González",
     role: "Desarrolladora Full Stack",
-    content: "DataStruct Academy transformó mi forma de entender las estructuras de datos. Las simulaciones visuales son increíbles.",
+    content: "Datodo transformó mi forma de entender las estructuras de datos. Las simulaciones visuales son increíbles.",
     avatar: "MG",
     rating: 5
   },
@@ -37,7 +37,7 @@ export default function TestimonialsSection() {
           Lo que dicen nuestros estudiantes
         </h2>
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-          Miles de estudiantes han transformado su carrera con DataStruct Academy.
+          Miles de estudiantes han transformado su carrera con Datodo.
         </p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

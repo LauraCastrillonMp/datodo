@@ -29,9 +29,9 @@ export function PropertiesCard({ properties }: PropertiesCardProps) {
               <div key={content.id} className="py-4 w-full">
                 <dt className="font-semibold flex items-center gap-2 w-full">
                   {content.name}
-                  {content.complexity && (
+                  {/* {content.complexity && (
                     <Badge variant="outline" className="ml-2">{content.complexity}</Badge>
-                  )}
+                  )} */}
                 </dt>
                 <dd className="prose max-w-none mt-1 w-full" dangerouslySetInnerHTML={{ __html: content.description || '' }} />
               </div>

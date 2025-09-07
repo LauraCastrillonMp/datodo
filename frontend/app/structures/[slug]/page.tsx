@@ -270,11 +270,11 @@ export default function DataStructurePage({
                     <OperationHistoryPanel
                       operationHistory={operationHistory}
                     />
-                    <StructureStatistics
+                    {/* <StructureStatistics
                       items={[]}
                       operationHistory={operationHistory}
                       getStructureType={getStructureType}
-                    />
+                    /> */}
                     <PropertiesCard properties={properties} />
                     <OperationsCard operations={operations} />
                   </div>

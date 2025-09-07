@@ -21,6 +21,7 @@ import {
   Target,
 } from "lucide-react";
 import { apiClient } from "@/lib/api";
+import { useAuth } from "@/contexts/auth-context";
 
 interface QuizQuestion {
   id: number;
@@ -52,8 +53,11 @@ export function QuizComponent({
   onRecentScore,
   onBestScore,
 }: QuizComponentProps) {
+  const { user } = useAuth();
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+  const [unlockedQuizIds, setUnlockedQuizIds] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshingUnlocked, setRefreshingUnlocked] = useState(false);
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [selectedQuizId, setSelectedQuizId] = useState<number | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -117,13 +121,44 @@ export function QuizComponent({
           }));
           setQuizzes(mappedQuizzes);
 
-          // If only one quiz, auto-select it
+          // Fetch unlocked quizzes for the user
+          if (user && typeof dataStructureId === "number") {
+            try {
+              console.log('🔓 Fetching unlocked quizzes for user:', user.id, 'type:', typeof user.id, 'structure:', dataStructureId, 'type:', typeof dataStructureId);
+              const unlockedRes = await apiClient.getUnlockedQuizzes(dataStructureId, user.id);
+              console.log('🔓 Unlocked quizzes response:', unlockedRes);
+              if (unlockedRes && unlockedRes.data && Array.isArray(unlockedRes.data) && unlockedRes.data.length > 0) {
+                const unlockedIds = unlockedRes.data.map((q: any) => q.id);
+                setUnlockedQuizIds(unlockedIds);
+                console.log('🔓 Unlocked quiz IDs:', unlockedIds);
+              } else {
+                // Only unlock beginner level if no unlocked quizzes data
+                console.log('🔓 No unlocked quizzes data, only unlocking beginner level');
+                const beginnerQuizzes = mappedQuizzes.filter(q => q.difficulty === 'principiante');
+                setUnlockedQuizIds(beginnerQuizzes.map(q => q.id));
+              }
+            } catch (error) {
+              console.error('❌ Error fetching unlocked quizzes:', error);
+              // Only unlock beginner level if error
+              console.log('🔓 Error fetching unlocked quizzes, only unlocking beginner level');
+              const beginnerQuizzes = mappedQuizzes.filter(q => q.difficulty === 'principiante');
+              setUnlockedQuizIds(beginnerQuizzes.map(q => q.id));
+            }
+          } else {
+            console.log('🔓 No user or invalid dataStructureId, only unlocking beginner level');
+            console.log('🔓 User:', user, 'dataStructureId:', dataStructureId, 'type:', typeof dataStructureId);
+            const beginnerQuizzes = mappedQuizzes.filter(q => q.difficulty === 'principiante');
+            setUnlockedQuizIds(beginnerQuizzes.map(q => q.id));
+          }
+
+          // If only one quiz, auto-select it (and it's unlocked)
+          // Note: We need to wait for unlockedQuizIds to be set before checking
           if (mappedQuizzes.length === 1) {
-            setSelectedQuizId(mappedQuizzes[0].id);
-            setShowQuizSelection(false);
+            // We'll check this in a separate useEffect after unlockedQuizIds is set
           }
         } else {
           setQuizzes([]);
+          setUnlockedQuizIds([]);
           setRecentResult(null);
           setBestResult(null);
           if (onRecentScore) onRecentScore(null);
@@ -135,12 +170,33 @@ export function QuizComponent({
           "No se pudieron cargar los cuestionarios. Por favor, inténtalo de nuevo."
         );
         setQuizzes([]);
+        setUnlockedQuizIds([]);
       } finally {
         setLoading(false);
       }
     };
     if (dataStructureSlug || dataStructureId) fetchQuizzesAndResults();
-  }, [dataStructureId, dataStructureSlug]);
+  }, [dataStructureId, dataStructureSlug, user]);
+
+  // Auto-select quiz if there's only one and it's unlocked
+  useEffect(() => {
+    if (quizzes.length === 1 && unlockedQuizIds.length > 0) {
+      const singleQuiz = quizzes[0];
+      if (unlockedQuizIds.includes(singleQuiz.id)) {
+        console.log('🔓 Auto-selecting single unlocked quiz:', singleQuiz.id);
+        setSelectedQuizId(singleQuiz.id);
+        setShowQuizSelection(false);
+      }
+    }
+  }, [quizzes, unlockedQuizIds]);
+
+  // Auto-refresh unlocked quizzes when component mounts or user changes
+  useEffect(() => {
+    if (user && typeof dataStructureId === "number" && quizzes.length > 0) {
+      console.log('🔄 Auto-refreshing unlocked quizzes on component mount/user change');
+      refreshUnlockedQuizzes();
+    }
+  }, [user, dataStructureId, quizzes.length]);
 
   // Load quiz results when selected quiz changes
   useEffect(() => {
@@ -222,6 +278,27 @@ export function QuizComponent({
   const handleQuizSelection = (quizId: number) => {
     setSelectedQuizId(quizId);
   };
+
+  const refreshUnlockedQuizzes = async () => {
+    if (!user || typeof dataStructureId !== "number") return;
+    
+    setRefreshingUnlocked(true);
+    try {
+      console.log('🔄 Refreshing unlocked quizzes...');
+      const unlockedRes = await apiClient.getUnlockedQuizzes(dataStructureId, user.id);
+      console.log('🔄 Updated unlocked quizzes response:', unlockedRes);
+      if (unlockedRes && unlockedRes.data) {
+        const unlockedIds = unlockedRes.data.map((q: any) => q.id);
+        setUnlockedQuizIds(unlockedIds);
+        console.log('🔄 Updated unlocked quiz IDs:', unlockedIds);
+      }
+    } catch (error) {
+      console.error('❌ Error refreshing unlocked quizzes:', error);
+    } finally {
+      setRefreshingUnlocked(false);
+    }
+  };
+
 
   const handleBackToSelection = () => {
     setShowQuizSelection(true);
@@ -383,6 +460,9 @@ export function QuizComponent({
               setBestResult(newScore);
               if (onBestScore) onBestScore(newScore);
             }
+
+            // Refresh unlocked quizzes after successful submission
+            refreshUnlockedQuizzes();
           }
         }
       }
@@ -445,6 +525,9 @@ export function QuizComponent({
           <CardTitle className="flex items-center gap-2">
             <Target className="w-5 h-5" />
             Selecciona un Cuestionario
+            {refreshingUnlocked && (
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary ml-2"></div>
+            )}
           </CardTitle>
           <CardDescription>
             Elige el cuestionario que deseas realizar. Cada uno tiene diferentes
@@ -453,39 +536,43 @@ export function QuizComponent({
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-4">
-            {quizzes.map((quizOption) => (
-              <div
-                key={quizOption.id}
-                className="border rounded-lg p-4 hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors"
-                onClick={() => handleQuizSelection(quizOption.id)}
-              >
-                <div className="flex items-center justify-between">
+            {quizzes.map((quizOption) => {
+              const unlocked = unlockedQuizIds.includes(quizOption.id);
+              return (
+                <div
+                  key={quizOption.id}
+                  className={`border rounded-lg p-4 flex items-center justify-between ${unlocked ? "hover:bg-accent hover:text-accent-foreground cursor-pointer" : "bg-gray-600 dark:bg-gray-800 text-gray-300 dark:text-gray-500 cursor-not-allowed opacity-20"}`}
+                  onClick={() => unlocked && handleQuizSelection(quizOption.id)}
+                  style={{ pointerEvents: unlocked ? "auto" : "none" }}
+                >
                   <div className="flex-1">
-                    <h3 className="font-semibold text-lg">
-                      {quizOption.title}
-                    </h3>
-                    <p className="text-muted-foreground text-sm mt-1">
+                    <h3 className="font-semibold text-lg">{quizOption.title}</h3>
+                    <p className="ttext-sm mt-1">
                       {quizOption.description}
                     </p>
-                    <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-4 mt-2 text-sm">
                       <span>• {quizOption.questions.length} preguntas</span>
                       <span>
-                        •{" "}
-                        {quizOption.timeLimit
-                          ? `${Math.floor(quizOption.timeLimit / 60)} min`
-                          : "Sin límite"}
+                        • {quizOption.timeLimit ? `${Math.floor(quizOption.timeLimit / 60)} min` : "Sin límite"}
                       </span>
+                      {refreshingUnlocked && (
+                        <span className="text-blue-500 text-xs">• Actualizando...</span>
+                      )}
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Badge variant="outline">
-                      {quizOption.difficulty || "N/A"}
-                    </Badge>
-                    <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                    <Badge variant="outline">{quizOption.difficulty || "N/A"}</Badge>
+                    {unlocked ? (
+                      <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                    ) : (
+                      <span title="Bloqueado">
+                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-amber-500"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 17a2 2 0 100-4 2 2 0 000 4zm6-6V9a6 6 0 10-12 0v2a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2v-6a2 2 0 00-2-2zm-8-2a4 4 0 118 0v2H8V9z" /></svg>
+                      </span>
+                    )}
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </CardContent>
       </Card>
@@ -832,9 +919,6 @@ export function QuizComponent({
               Otros cuestionarios
             </Button>
           )}
-          <Button onClick={() => window.history.back()}>
-            Volver a la estructura de datos
-          </Button>
         </div>
       </CardContent>
     </Card>

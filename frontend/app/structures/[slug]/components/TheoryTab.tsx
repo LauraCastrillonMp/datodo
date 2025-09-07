@@ -77,7 +77,7 @@ export function TheoryTab({ generalContent, applications, resources }: TheoryTab
               {resources.map((content) => (
                 <div key={content.id}>
                   <h4 className="font-semibold mb-2 text-sm sm:text-base">{content.name}</h4>
-                  {content.format === 'link' && content.description ? (
+                  {content.format === 'link' || content.format === 'video' && content.description ? (
                     <a 
                       href={content.description} 
                       target="_blank" 

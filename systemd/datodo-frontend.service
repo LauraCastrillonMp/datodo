@@ -1,0 +1,27 @@
+[Unit]
+Description=DataTodo Frontend Service
+After=network.target datodo-backend.service
+Wants=datodo-backend.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/datodo/frontend
+EnvironmentFile=/opt/datodo/frontend/.env.local
+ExecStart=/usr/bin/npm run start
+Restart=always
+RestartSec=10
+User=datodo
+Group=datodo
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=datodo-frontend
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/opt/datodo/frontend
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target
