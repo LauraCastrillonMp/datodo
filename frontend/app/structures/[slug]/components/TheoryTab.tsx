@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { BookOpen, Play, ExternalLink } from "lucide-react";
 import { VideoModal } from "@/components/ui/video-modal";
 import { useState } from "react";
+import { apiClient } from "@/lib/api";
 
 interface TheoryTabProps {
   generalContent: any[];
@@ -41,8 +42,17 @@ export function TheoryTab({
 
   const handlePlayVideo = () => {
     if (animationVideo) {
-      const videoUrl = `/${animationVideo.filePath.replace(/^public[\\/]/, '').replace(/^\/+/, '')}`;
-      console.log("Video URL in TheoryTab:", videoUrl); // Log the video URL
+      // Use videos from the public folder
+      // Clean the filePath to ensure it's just the filename
+      const fileName = animationVideo.filePath.replace(/^.*[\\\/]/, ''); // Extract just the filename
+      const videoUrl = `/videos/${fileName}`;
+      console.log("🎥 Video Loading Debug:", {
+        originalFilePath: animationVideo.filePath,
+        extractedFileName: fileName,
+        constructedUrl: videoUrl,
+        videoTitle: animationVideo.title,
+        videoId: animationVideo.id
+      });
       setSelectedVideo({
         url: videoUrl,
         title: animationVideo.title,

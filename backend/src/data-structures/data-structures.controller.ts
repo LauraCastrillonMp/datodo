@@ -401,9 +401,12 @@ export class DataStructuresController {
   @Get('video/:id')
   async getVideo(@Param('id') id: string, @Res() res: Response) {
     try {
+      console.log(`🎥 Requesting video with ID: ${id}`);
       const videoPath = await this.dataStructuresService.getVideoPath(id);
+      console.log(`📁 Video path: ${videoPath}`);
       
       if (!videoPath) {
+        console.log(`❌ Video not found for ID: ${id}`);
         return res.status(404).json({ error: 'Video not found' });
       }
 
@@ -412,9 +415,10 @@ export class DataStructuresController {
       res.setHeader('Accept-Ranges', 'bytes');
       res.setHeader('Cache-Control', 'public, max-age=31536000');
       
+      console.log(`✅ Serving video file: ${videoPath}`);
       res.sendFile(videoPath, { root: process.cwd() });
     } catch (error) {
-      console.error('Error serving video:', error);
+      console.error('❌ Error serving video:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   }

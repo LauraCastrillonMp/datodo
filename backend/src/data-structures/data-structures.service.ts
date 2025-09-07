@@ -147,6 +147,9 @@ export class DataStructuresService {
             filePath: true,
             title: true,
             duration: true,
+            description: true,
+            difficulty: true,
+            isActive: true,
           },
         },
       },
@@ -162,11 +165,29 @@ export class DataStructuresService {
   }
 
   async getVideoPath(id: string): Promise<string | null> {
-    const content = await this.prisma.dataStructureContent.findUnique({
+    // First try to get from VideoContent model
+    const videoContent = await this.prisma.videoContent.findUnique({
       where: { id: parseInt(id, 10) },
-      select: { filePath: true },
+      select: { 
+        filePath: true,
+        isActive: true 
+      },
     });
 
-    return content?.filePath || null;
+    if (videoContent && videoContent.isActive) {
+      return videoContent.filePath;
+    }
+
+    // Fallback to DataStructureContent model for backward compatibility
+    const content = await this.prisma.dataStructureContent.findUnique({
+      where: { id: parseInt(id, 10) },
+      select: { 
+        filePath: true,
+        format: true 
+      },
+    });
+
+    // Only return filePath if the content format is video
+    return content?.format === 'video' ? content?.filePath || null : null;
   }
 }

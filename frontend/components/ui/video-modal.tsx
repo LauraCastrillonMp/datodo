@@ -45,6 +45,7 @@ export function VideoModal({
   const containerRef = useRef<HTMLDivElement>(null);
   const [isSeeking, setIsSeeking] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(0);
+  const [hasError, setHasError] = useState(false);
 
   // Sync state with video element
   useEffect(() => {
@@ -233,15 +234,48 @@ export function VideoModal({
         )}
 
         <div ref={containerRef} className={containerClass}>
-          <video
-            ref={videoRef}
-            src={videoUrl}
-            className={videoClass}
-            controls
-            preload="metadata"
-            onError={(e) => console.error("Video failed to load:", e, videoUrl)}
-            tabIndex={-1}
-          />
+          {hasError ? (
+            <div className="flex flex-col items-center justify-center h-full bg-gray-100 dark:bg-gray-800 rounded-lg">
+              <div className="text-center p-8">
+                <div className="text-6xl mb-4">🎥</div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                  Video Not Available
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                  The video file could not be loaded.
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-500">
+                  URL: {videoUrl}
+                </p>
+                <Button
+                  onClick={() => {
+                    setHasError(false);
+                    if (videoRef.current) {
+                      videoRef.current.load();
+                    }
+                  }}
+                  className="mt-4"
+                  variant="outline"
+                >
+                  Try Again
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <video
+              ref={videoRef}
+              src={videoUrl}
+              className={videoClass}
+              controls
+              preload="metadata"
+              onError={(e) => {
+                console.error("Video failed to load:", e, videoUrl);
+                setHasError(true);
+              }}
+              onLoadStart={() => setHasError(false)}
+              tabIndex={-1}
+            />
+          )}
 
           {/* Custom Controls */}
           {/* <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4"> */}
