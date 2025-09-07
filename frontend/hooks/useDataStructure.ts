@@ -8,7 +8,23 @@ interface DataStructureContent {
   category?: string;
   name: string;
   description?: string;
-  complexity?: string;
+  filePath?: string;
+  duration?: number;
+}
+
+interface VideoContent {
+  id: number;
+  dataStructureId: number;
+  title: string;
+  description?: string;
+  filePath: string;
+  duration: number;
+  thumbnailPath?: string;
+  videoType: 'animation' | 'explanation' | 'tutorial' | 'demonstration';
+  difficulty: 'principiante' | 'intermedio' | 'avanzado';
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface DataStructure {
@@ -20,6 +36,7 @@ interface DataStructure {
   createdAt: string;
   updatedAt: string;
   contents: DataStructureContent[];
+  videos: VideoContent[];
   creator: {
     id: number;
     name: string;

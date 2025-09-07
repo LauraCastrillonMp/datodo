@@ -55,6 +55,13 @@ enum AchievementRarity {
   legendary
 }
 
+enum VideoType {
+  animation
+  explanation
+  tutorial
+  demonstration
+}
+
 // ===================== MODELS =====================
 
 model User {
@@ -96,25 +103,51 @@ model DataStructure {
   // Relaciones
   contents             DataStructureContent[]
   quizzes              Quiz[]
+  videos               VideoContent[]
   creator              User                     @relation("CreatedStructures", fields: [createdBy], references: [id], onDelete: Cascade)
 
   @@map("data_structures")
   @@index([createdBy])
 }
 
-model DataStructureContent {
-  id                   Int                     @id @default(autoincrement())
-  dataStructureId      Int
-  contentType          DataStructureContentType
-  format               ContentFormat           @default(text)
-  category             String?                 @db.VarChar(100)
-  name                 String                  @db.VarChar(100)
-  description          String?                 @db.Text
-  updatedAt            DateTime?               @updatedAt @db.Timestamp(0)
+model VideoContent {
+  id              Int                     @id @default(autoincrement())
+  dataStructureId Int
+  title           String                  @db.VarChar(100)
+  description     String?                 @db.Text
+  filePath        String                  @db.VarChar(255)
+  duration        Int                     // Duration in seconds
+  thumbnailPath   String?                 @db.VarChar(255) // Optional thumbnail
+  videoType       VideoType               @default(animation)
+  difficulty      DataStructureDifficulty
+  isActive        Boolean                 @default(true)
+  createdAt       DateTime                @default(now()) @db.Timestamp(0)
+  updatedAt       DateTime                @updatedAt @db.Timestamp(0)
 
   // Relaciones
-  dataStructure        DataStructure           @relation(fields: [dataStructureId], references: [id], onDelete: Cascade)
-  editLogs             ContentEditLog[]
+  dataStructure   DataStructure           @relation(fields: [dataStructureId], references: [id], onDelete: Cascade)
+
+  @@index([dataStructureId])
+  @@index([videoType])
+  @@index([isActive])
+  @@map("video_content")
+}
+
+model DataStructureContent {
+  id              Int                     @id @default(autoincrement())
+  dataStructureId Int
+  contentType     DataStructureContentType
+  format          ContentFormat           @default(text)
+  category        String?                 @db.VarChar(100)
+  name            String                  @db.VarChar(100)
+  description     String?                 @db.Text
+  filePath        String?                 @db.VarChar(255) // Path to the video file (if format is video)
+  duration        Int?                    // Duration of the video in seconds
+  updatedAt       DateTime?               @updatedAt @db.Timestamp(0)
+
+  // Relaciones
+  dataStructure   DataStructure           @relation(fields: [dataStructureId], references: [id], onDelete: Cascade)
+  editLogs        ContentEditLog[]
 
   @@index([dataStructureId])
   @@map("data_structure_content")

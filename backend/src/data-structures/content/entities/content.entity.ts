@@ -24,7 +24,10 @@ export class ContentEntity implements DataStructureContent {
   description: string | null;
 
   @ApiProperty({ required: false, nullable: true })
-  complexity: string | null;
+  filePath: string | null;
+
+  @ApiProperty({ required: false, nullable: true })
+  duration: number | null;
 
   @ApiProperty()
   updatedAt: Date;

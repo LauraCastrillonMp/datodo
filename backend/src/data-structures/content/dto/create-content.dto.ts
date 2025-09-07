@@ -5,6 +5,7 @@ import {
   IsOptional,
   MinLength,
   MaxLength,
+  IsNumber,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { DataStructureContentType, ContentFormat } from '@prisma/client';
@@ -58,12 +59,21 @@ export class CreateContentDto {
   description?: string;
 
   @ApiProperty({
-    description: 'Complexity of the content (optional)',
+    description: 'File path for video/image content (optional)',
     required: false,
-    example: 'O(log n)',
+    example: '/uploads/videos/binary-tree-animation.mkv',
   })
   @IsString()
   @IsOptional()
-  @MaxLength(20)
-  complexity?: string;
+  @MaxLength(255)
+  filePath?: string;
+
+  @ApiProperty({
+    description: 'Duration of video content in seconds (optional)',
+    required: false,
+    example: 120,
+  })
+  @IsNumber()
+  @IsOptional()
+  duration?: number;
 } 

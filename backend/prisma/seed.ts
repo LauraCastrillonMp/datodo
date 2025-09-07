@@ -6,6 +6,7 @@ import {
   DataStructureDifficulty,
   QuizDifficulty,
   QuizQuestionType,
+  VideoType,
 } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
@@ -167,6 +168,15 @@ async function main() {
             description:
               'El tamaño de la cola puede crecer o decrecer dinámicamente según las operaciones de inserción y eliminación.',
           },
+          {
+            contentType: DataStructureContentType.property,
+            name: 'video',
+            format: ContentFormat.video,
+            description:
+              'Animación 2d sencilla de las implementaciones de colas',
+            filePath: 'public/videos/queue_animation.mkv',
+            duration: 100,
+          }
         ],
       },
       quizzes: {
@@ -795,6 +805,87 @@ async function main() {
       },
     },
   });
+
+  // Create video content for data structures
+  console.log('🎬 Creating video content...');
+
+  // Queue videos
+  await prisma.videoContent.createMany({
+    data: [
+      {
+        dataStructureId: queue.id,
+        title: 'Animación de Cola - Operaciones Básicas',
+        description: 'Demostración visual de las operaciones de cola (enqueue, dequeue)',
+        filePath: '/videos/queue_animation.mkv',
+        duration: 120,
+        videoType: VideoType.animation,
+        difficulty: DataStructureDifficulty.principiante,
+      },
+    ],
+  });
+
+  // Stack videos
+  await prisma.videoContent.createMany({
+    data: [
+      {
+        dataStructureId: pilas.id,
+        title: 'Animación de Pila - Push y Pop',
+        description: 'Demostración visual de las operaciones de pila (push, pop)',
+        filePath: '/videos/stack_animation.mkv',
+        duration: 90,
+        videoType: VideoType.animation,
+        difficulty: DataStructureDifficulty.principiante,
+      },
+    ],
+  });
+
+  // Linked List videos
+  // await prisma.videoContent.createMany({
+  //   data: [
+  //     {
+  //       dataStructureId: listaEnlazadaSimple.id,
+  //       title: 'Animación de Lista Enlazada',
+  //       description: 'Demostración visual de operaciones en lista enlazada (insertar, eliminar, buscar)',
+  //       filePath: '/uploads/videos/linked-list-animation.mkv',
+  //       duration: 150,
+  //       videoType: VideoType.animation,
+  //       difficulty: DataStructureDifficulty.principiante,
+  //     },
+  //     {
+  //       dataStructureId: listaEnlazadaSimple.id,
+  //       title: 'Tutorial de Lista Enlazada',
+  //       description: 'Tutorial completo de implementación de lista enlazada',
+  //       filePath: '/uploads/videos/linked-list-tutorial.mkv',
+  //       duration: 300,
+  //       videoType: VideoType.tutorial,
+  //       difficulty: DataStructureDifficulty.principiante,
+  //     },
+  //   ],
+  // });
+
+  // // Double Linked List videos
+  // await prisma.videoContent.createMany({
+  //   data: [
+  //     {
+  //       dataStructureId: listaEnlazaDoble.id,
+  //       title: 'Animación de Lista Doble',
+  //       description: 'Demostración visual de operaciones en lista doblemente enlazada',
+  //       filePath: '/uploads/videos/double-linked-list-animation.mkv',
+  //       duration: 180,
+  //       videoType: VideoType.animation,
+  //       difficulty: DataStructureDifficulty.intermedio,
+  //     },
+  //     {
+  //       dataStructureId: listaEnlazaDoble.id,
+  //       title: 'Demostración de Lista Doble',
+  //       description: 'Demostración práctica de las ventajas de la lista doble',
+  //       filePath: '/uploads/videos/double-linked-list-demo.mkv',
+  //       duration: 200,
+  //       videoType: VideoType.demonstration,
+  //       difficulty: DataStructureDifficulty.intermedio,
+  //     },
+  //   ],
+  // });
 
   console.log('🌱 Seeding completado');
 }

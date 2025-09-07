@@ -10,7 +10,9 @@ import {
   Req,
   ParseIntPipe,
   NotFoundException,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { DataStructuresService } from './data-structures.service';
 import { QuizService } from './quiz/quiz.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -138,8 +140,17 @@ export class DataStructuresController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 404, description: 'Data structure not found.' })
-  update(@Param('id') id: string, @Body() dto: UpdateDataStructureDto, @Req() req: RequestWithUser) {
-    return this.dataStructuresService.update(+id, dto, req.user.id, req.user.role);
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdateDataStructureDto,
+    @Req() req: RequestWithUser,
+  ) {
+    return this.dataStructuresService.update(
+      +id,
+      dto,
+      req.user.id,
+      req.user.role,
+    );
   }
 
   @Delete(':id')
@@ -224,13 +235,13 @@ export class DataStructuresController {
     // First get the quiz to find its structureId
     const quiz = await this.prisma.quiz.findUnique({
       where: { id: quizId },
-      select: { dataStructureId: true }
+      select: { dataStructureId: true },
     });
-    
+
     if (!quiz) {
       throw new NotFoundException(`Quiz with ID ${quizId} not found`);
     }
-    
+
     return this.quizService.findOne(quiz.dataStructureId, quizId);
   }
 
@@ -258,14 +269,19 @@ export class DataStructuresController {
     // First get the quiz to find its structureId
     const quiz = await this.prisma.quiz.findUnique({
       where: { id: quizId },
-      select: { dataStructureId: true }
+      select: { dataStructureId: true },
     });
-    
+
     if (!quiz) {
       throw new NotFoundException(`Quiz with ID ${quizId} not found`);
     }
-    
-    return this.quizService.submitAttempt(quiz.dataStructureId, quizId, attemptDto, req.user.id);
+
+    return this.quizService.submitAttempt(
+      quiz.dataStructureId,
+      quizId,
+      attemptDto,
+      req.user.id,
+    );
   }
 
   @Delete('quizzes/:quizId')
@@ -290,14 +306,19 @@ export class DataStructuresController {
     // First get the quiz to find its structureId
     const quiz = await this.prisma.quiz.findUnique({
       where: { id: quizId },
-      select: { dataStructureId: true }
+      select: { dataStructureId: true },
     });
-    
+
     if (!quiz) {
       throw new NotFoundException(`Quiz with ID ${quizId} not found`);
     }
-    
-    return this.quizService.remove(quiz.dataStructureId, quizId, req.user.id, req.user.role);
+
+    return this.quizService.remove(
+      quiz.dataStructureId,
+      quizId,
+      req.user.id,
+      req.user.role,
+    );
   }
 
   @Get('quizzes/:quizId/results')
@@ -321,14 +342,19 @@ export class DataStructuresController {
     // First get the quiz to find its structureId
     const quiz = await this.prisma.quiz.findUnique({
       where: { id: quizId },
-      select: { dataStructureId: true }
+      select: { dataStructureId: true },
     });
-    
+
     if (!quiz) {
       throw new NotFoundException(`Quiz with ID ${quizId} not found`);
     }
-    
-    return this.quizService.getResults(quiz.dataStructureId, quizId, req.user.id, req.user.role);
+
+    return this.quizService.getResults(
+      quiz.dataStructureId,
+      quizId,
+      req.user.id,
+      req.user.role,
+    );
   }
 
   @Get('slug/:slug')
@@ -356,7 +382,8 @@ export class DataStructuresController {
   @ApiTags('student', 'teacher', 'admin')
   @ApiOperation({
     summary: 'Get all quizzes for a data structure by slug',
-    description: 'Get all quizzes for a data structure by its slug. Available to all authenticated users.',
+    description:
+      'Get all quizzes for a data structure by its slug. Available to all authenticated users.',
   })
   @ApiParam({ name: 'slug', description: 'Data structure slug' })
   @ApiResponse({
@@ -369,5 +396,26 @@ export class DataStructuresController {
   async findAllQuizzesBySlug(@Param('slug') slug: string) {
     const ds = await this.dataStructuresService.findBySlug(slug);
     return this.quizService.findAll(ds.id);
+  }
+
+  @Get('video/:id')
+  async getVideo(@Param('id') id: string, @Res() res: Response) {
+    try {
+      const videoPath = await this.dataStructuresService.getVideoPath(id);
+      
+      if (!videoPath) {
+        return res.status(404).json({ error: 'Video not found' });
+      }
+
+      // Set appropriate headers for video streaming
+      res.setHeader('Content-Type', 'video/mp4');
+      res.setHeader('Accept-Ranges', 'bytes');
+      res.setHeader('Cache-Control', 'public, max-age=31536000');
+      
+      res.sendFile(videoPath, { root: process.cwd() });
+    } catch (error) {
+      console.error('Error serving video:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
   }
 }

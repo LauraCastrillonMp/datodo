@@ -214,6 +214,7 @@ export default function DataStructurePage({
   const operations = getOperations();
   const applications = getApplications();
   const resources = getResources();
+  const videos = dataStructure?.videos || [];
 
   const renderGenericVisualizer = () => {
     return (
@@ -258,6 +259,7 @@ export default function DataStructurePage({
             generalContent={generalContent}
             applications={applications}
             resources={resources}
+            videos={videos}
           />
         }
         visualizer={
