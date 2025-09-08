@@ -167,15 +167,6 @@ async function main() {
             format: ContentFormat.text,
             description:
               'El tamaño de la cola puede crecer o decrecer dinámicamente según las operaciones de inserción y eliminación.',
-          },
-          {
-            contentType: DataStructureContentType.property,
-            name: 'video',
-            format: ContentFormat.video,
-            description:
-              'Animación 2d sencilla de las implementaciones de colas',
-            filePath: 'public/videos/queue_animation.mp4',
-            duration: 100,
           }
         ],
       },
@@ -387,15 +378,6 @@ async function main() {
             format: ContentFormat.text,
             description:
               'El tamaño de la pila puede crecer o decrecer dinámicamente según las operaciones de inserción y eliminación.',
-          },
-          {
-            contentType: DataStructureContentType.property,
-            name: 'video',
-            format: ContentFormat.video,
-            description:
-              'Animación 2d sencilla de las implementaciones de colas',
-            filePath: 'public/videos/stack_animation.mp4',
-            duration: 100,
           }
         ],
       },
@@ -825,7 +807,7 @@ async function main() {
         dataStructureId: queue.id,
         title: 'Animación de Cola - Operaciones Básicas',
         description: 'Demostración visual de las operaciones de cola (enqueue, dequeue)',
-        filePath: '/videos/queue_animation.mkv',
+        filePath: '/videos/queue_animation.mp4',
         duration: 120,
         videoType: VideoType.animation,
         difficulty: DataStructureDifficulty.principiante,
@@ -840,7 +822,7 @@ async function main() {
         dataStructureId: pilas.id,
         title: 'Animación de Pila - Push y Pop',
         description: 'Demostración visual de las operaciones de pila (push, pop)',
-        filePath: '/videos/stack_animation.mkv',
+        filePath: '/videos/stack_animation.mp4',
         duration: 90,
         videoType: VideoType.animation,
         difficulty: DataStructureDifficulty.principiante,
