@@ -174,7 +174,7 @@ async function main() {
             format: ContentFormat.video,
             description:
               'Animación 2d sencilla de las implementaciones de colas',
-            filePath: 'public/videos/queue_animation.mkv',
+            filePath: 'public/videos/queue_animation.mp4',
             duration: 100,
           }
         ],
@@ -387,6 +387,15 @@ async function main() {
             format: ContentFormat.text,
             description:
               'El tamaño de la pila puede crecer o decrecer dinámicamente según las operaciones de inserción y eliminación.',
+          },
+          {
+            contentType: DataStructureContentType.property,
+            name: 'video',
+            format: ContentFormat.video,
+            description:
+              'Animación 2d sencilla de las implementaciones de colas',
+            filePath: 'public/videos/stack_animation.mp4',
+            duration: 100,
           }
         ],
       },
