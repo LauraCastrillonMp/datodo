@@ -68,14 +68,14 @@ export default function HomePage() {
 
   const getIconComponent = (iconName: string) => iconMap[iconName as keyof typeof iconMap] || List
 
-  // Show spinner while auth is loading/initializing
-  if (loading || !initialized) {
-    return <PageLoadingSpinner text="Cargando..." />
-  }
-
-  // Show landing page only if auth is initialized and user is not logged in
+  // For unauthenticated users, show landing immediately (don't block on auth init)
   if (!userProfile) {
     return <LandingPage />
+  }
+
+  // Show spinner only for authenticated users while loading protected data
+  if (loading || !initialized) {
+    return <PageLoadingSpinner text="Cargando..." />
   }
 
   // Dashboard para usuarios autenticados

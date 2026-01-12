@@ -11,7 +11,7 @@ import { usePathname } from "next/navigation"
 import { useState } from "react"
 import { useIsMobile } from "./ui/use-mobile"
 
-const publicRoutes = ['/auth/login', '/auth/register', '/auth/forgot', '/auth/reset', '/test-auth', '/debug-auth']
+const publicRoutes = ['/landing', '/auth/login', '/auth/register', '/auth/forgot', '/auth/reset', '/test-auth', '/debug-auth']
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const { user, loading, initialized } = useAuth()

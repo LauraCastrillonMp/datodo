@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -24,18 +22,10 @@ import {
 } from "lucide-react";
 import dynamic from "next/dynamic";
 
-// Lazy load non-critical sections
-const FeaturesSection = dynamic(() => import("./sections/FeaturesSection"), {
-  ssr: false,
-});
-const DataStructuresSection = dynamic(
-  () => import("./sections/DataStructuresSection"),
-  { ssr: false }
-);
-const TestimonialsSection = dynamic(
-  () => import("./sections/TestimonialsSection"),
-  { ssr: false }
-);
+// Lazy load non-critical sections with SSR enabled for faster first paint
+const FeaturesSection = dynamic(() => import("./sections/FeaturesSection"));
+const DataStructuresSection = dynamic(() => import("./sections/DataStructuresSection"));
+const TestimonialsSection = dynamic(() => import("./sections/TestimonialsSection"));
 
 export default function LandingPage() {
   return (
