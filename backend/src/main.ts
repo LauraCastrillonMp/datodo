@@ -15,12 +15,12 @@ async function bootstrap() {
   console.log('JWT_SECRET set:', !!configService.get('JWT_SECRET'));
   console.log(
     'FRONTEND_URL:',
-    configService.get('FRONTEND_URL', 'http://localhost:3000'),
+    configService.get('FRONTEND_URL', 'https://datododsa.vercel.app'),
   );
 
   // Enable CORS
   const allowedOrigins = (
-    configService.get<string>('FRONTEND_URL') || 'http://localhost:3000'
+    configService.get<string>('FRONTEND_URL') || 'https://datododsa.vercel.app'
   ).split(',');
   app.enableCors({
     origin: allowedOrigins,
