@@ -36,17 +36,16 @@ export class AuthController {
   ) {
     const user = await this.authService.register(dto);
     const tokens = await this.authService.login(user);
-    const isProduction = process.env.NODE_ENV === 'production';
     res.cookie('access_token', tokens.accessToken, {
       httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? 'strict' : 'lax',
+      secure: true,
+      sameSite: 'none',
       maxAge: 60 * 60 * 1000,
     });
     res.cookie('refresh_token', tokens.refreshToken, {
       httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? 'strict' : 'lax',
+      secure: true,
+      sameSite: 'none',
       maxAge: 7 * 24 * 3600000,
     });
     return user;
@@ -67,17 +66,16 @@ export class AuthController {
   ) {
     try {
       const tokens = await this.authService.login(req.user);
-      const isProduction = process.env.NODE_ENV === 'production';
       res.cookie('access_token', tokens.accessToken, {
         httpOnly: true,
-        secure: isProduction,
-        sameSite: isProduction ? 'strict' : 'lax',
+        secure: true,
+        sameSite: 'none',
         maxAge: 60 * 60 * 1000,
       });
       res.cookie('refresh_token', tokens.refreshToken, {
         httpOnly: true,
-        secure: isProduction,
-        sameSite: isProduction ? 'strict' : 'lax',
+        secure: true,
+        sameSite: 'none',
         maxAge: 7 * 24 * 3600000,
       });
       return req.user;
@@ -134,17 +132,16 @@ export class AuthController {
 
     const tokens = await this.authService.refreshTokens(userId, refreshToken);
 
-    const isProduction = process.env.NODE_ENV === 'production';
     res.cookie('access_token', tokens.accessToken, {
       httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? 'strict' : 'lax',
+      secure: true,
+      sameSite: 'none',
       maxAge: 60 * 60 * 1000,
     });
     res.cookie('refresh_token', tokens.refreshToken, {
       httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? 'strict' : 'lax',
+      secure: true,
+      sameSite: 'none',
       maxAge: 7 * 24 * 3600000,
     });
 
